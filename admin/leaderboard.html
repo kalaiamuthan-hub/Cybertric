@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Admin Live Leaderboard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-layout">
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo-icon" style="width: 32px; height: 32px; font-size: 1rem;">◈</div>
+      <div class="sidebar-brand-text">CYBER<span style="color:var(--cyan);">TRIX</span></div>
+      <span class="sidebar-badge">ROOT</span>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li>
+        <a href="dashboard.html" class="sidebar-link">
+          <span class="sidebar-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="players.html" class="sidebar-link">
+          <span class="sidebar-icon">👥</span>
+          <span>Players</span>
+        </a>
+      </li>
+      <li>
+        <a href="challenges.html" class="sidebar-link">
+          <span class="sidebar-icon">⚡</span>
+          <span>Challenges</span>
+        </a>
+      </li>
+      <li>
+        <a href="submissions.html" class="sidebar-link">
+          <span class="sidebar-icon">📝</span>
+          <span>Submissions</span>
+        </a>
+      </li>
+      <li>
+        <a href="leaderboard.html" class="sidebar-link active">
+          <span class="sidebar-icon">🏆</span>
+          <span>Leaderboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="announcements.html" class="sidebar-link">
+          <span class="sidebar-icon">📢</span>
+          <span>Announcements</span>
+        </a>
+      </li>
+      <li>
+        <a href="settings.html" class="sidebar-link">
+          <span class="sidebar-icon">⚙️</span>
+          <span>Event Control</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button class="btn-cyber btn-cyber-danger btn-cyber-sm btn-admin-logout" style="width: 100%;">
+        TERMINATE SESSION
+      </button>
+    </div>
+  </aside>
+
+  <!-- Admin Main Workspace -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <div class="admin-title-area">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="admin-mobile-toggle" aria-label="Toggle Sidebar">☰</button>
+          <h1>LIVE <span style="color: var(--cyan);">LEADERBOARD</span></h1>
+        </div>
+        <p>Synchronized Firestore real-time standings, solve counts, and tie-break ordering.</p>
+      </div>
+
+      <div class="admin-system-status">
+        <div id="admin-clock" class="system-clock">--:--:-- UTC</div>
+      </div>
+    </header>
+
+    <!-- Toolbar / Filters (Section 14) -->
+    <section class="admin-toolbar">
+      <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <input type="text" id="admin-search-leaderboard" class="form-control" placeholder="Search operative codename..." style="width: 280px;">
+        
+        <select id="admin-sort-leaderboard" class="form-control" style="width: 220px;">
+          <option value="POINTS">SORT: HIGHEST POINTS</option>
+          <option value="SOLVED">SORT: MOST SOLVES</option>
+          <option value="NAME">SORT: ALPHABETICAL</option>
+        </select>
+      </div>
+
+      <div style="font-family: var(--font-code); font-size: 0.8rem; color: var(--green);">
+        ● SYNCHRONIZED WITH PUBLIC STANDINGS
+      </div>
+    </section>
+
+    <!-- Admin Leaderboard Table (Section 14) -->
+    <section class="cyber-table-container">
+      <table class="cyber-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">RANK</th>
+            <th>CODENAME</th>
+            <th>EMAIL (PROTECTED)</th>
+            <th style="width: 120px;">SOLVED</th>
+            <th style="width: 150px;">POINTS</th>
+            <th>LAST SUBMISSION</th>
+          </tr>
+        </thead>
+        <tbody id="admin-leaderboard-tbody">
+          <!-- Dynamically populated via JS -->
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              CONNECTING TO FIRESTORE STANDINGS STREAM...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="../js/sound.js"></script>
+  <script src="../js/background.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let ranks = [];
+      let search = '';
+      let sortBy = 'POINTS';
+
+      const tbody = document.getElementById('admin-leaderboard-tbody');
+
+      function render() {
+        let filtered = ranks.filter(r => !search || r.username.toLowerCase().includes(search));
+
+        if (sortBy === 'SOLVED') {
+          filtered.sort((a, b) => b.solvedCount - a.solvedCount || b.points - a.points);
+        } else if (sortBy === 'NAME') {
+          filtered.sort((a, b) => a.username.localeCompare(b.username));
+        } else {
+          filtered.sort((a, b) => b.points - a.points || b.solvedCount - a.solvedCount);
+        }
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">NO OPERATIVES FOUND</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = filtered.map((r, i) => `
+          <tr>
+            <td style="font-weight: 800; color: var(--cyan);">${String(i + 1).padStart(2, '0')}</td>
+            <td><strong style="color: #fff;">${escapeHTML(r.username)}</strong></td>
+            <td style="color: var(--text-secondary); font-family: var(--font-code); font-size: 0.85rem;">${escapeHTML(r.email)}</td>
+            <td style="color: var(--green); font-weight: 700;">${r.solvedCount}</td>
+            <td style="font-family: var(--font-cyber); font-weight: 800; color: var(--text-main); font-size: 1.1rem;">${r.points}</td>
+            <td style="color: var(--text-muted); font-size: 0.8rem;">${r.lastSolvedAt ? new Date(r.lastSolvedAt).toLocaleString() : 'N/A'}</td>
+          </tr>
+        `).join('');
+      }
+
+      window.CYBERTRIX_DB.leaderboard.onSnapshot((data) => {
+        ranks = data;
+        render();
+      });
+
+      document.getElementById('admin-search-leaderboard').addEventListener('input', (e) => {
+        search = e.target.value.toLowerCase().trim();
+        render();
+      });
+
+      document.getElementById('admin-sort-leaderboard').addEventListener('change', (e) => {
+        sortBy = e.target.value;
+        render();
+      });
+    });
+  </script>
+</body>
+</html>

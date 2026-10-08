@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Rules of Engagement</title>
+  <meta name="description" content="Rules, scoring criteria, and code of conduct for CYBERTRIX CTF 2026.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+  <div class="glow-orb glow-orb-cyan"></div>
+  <div class="glow-orb glow-orb-purple"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="cyber-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-logo-icon">◈</div>
+        <span>CYBER<span class="brand-accent">TRIX</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="rules.html" class="nav-link active">Rules</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sound-toggle" aria-label="Toggle Sound">🔊 SOUND: ON</button>
+        <div id="nav-auth-slot"></div>
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Rules Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem; max-width: 950px;">
+    <header style="margin-bottom: 2.5rem;">
+      <span class="cyber-badge badge-red" style="margin-bottom: 0.5rem;">DIRECTIVE PROTOCOL</span>
+      <h1 style="font-size: clamp(2rem, 5vw, 3rem); letter-spacing: 2px;">
+        RULES OF <span style="color: var(--cyan);">ENGAGEMENT</span>
+      </h1>
+      <p style="color: var(--text-secondary); font-size: 1rem; margin-top: 0.4rem;">
+        Adherence to the following directives is mandatory for all competitors participating in CYBERTRIX CTF 2026.
+      </p>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+      <!-- Rule 1: Flag Format -->
+      <article class="cyber-card cyber-card-corner">
+        <h2 style="color: var(--cyan); font-size: 1.3rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>01.</span> STANDARD FLAG SYNTAX
+        </h2>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+          Unless explicitly instructed otherwise inside a challenge briefing, all captured flags adhere to the standard CYBERTRIX format:
+        </p>
+        <div class="clue-terminal">
+          <code>CYBERTRIX{s0m3_s3cr3t_fl4g_h3r3}</code>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.75rem;">
+          Flags are strictly case-sensitive. Ensure no leading or trailing whitespace is accidentally submitted.
+        </p>
+      </article>
+
+      <!-- Rule 2: Fair Play & Scoring -->
+      <article class="cyber-card cyber-card-corner">
+        <h2 style="color: var(--cyan); font-size: 1.3rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>02.</span> SCORING & TIE-BREAKER LOGIC
+        </h2>
+        <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.5rem;">
+          <li>Points are awarded instantaneously upon first successful flag submission.</li>
+          <li>Duplicate submissions for the same challenge will not award additional points.</li>
+          <li>In the event of a points tie, ranking priority is determined by:
+            <ol style="margin-top: 0.4rem; padding-left: 1.25rem;">
+              <li><strong>Highest number of distinct solved challenges</strong>.</li>
+              <li><strong>Earliest timestamp of the last accepted submission</strong>.</li>
+            </ol>
+          </li>
+        </ul>
+      </article>
+
+      <!-- Rule 3: Infrastructure Protection -->
+      <article class="cyber-card cyber-card-corner">
+        <h2 style="color: var(--red); font-size: 1.3rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>03.</span> PROHIBITED ACTIONS (ZERO TOLERANCE)
+        </h2>
+        <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.5rem;">
+          <li><strong>Denial of Service (DoS/DDoS)</strong> attacks against the CYBERTRIX platform infrastructure or fellow competitors are strictly forbidden.</li>
+          <li><strong>Brute forcing / automated directory fuzzing</strong> of the main platform web interface or submission endpoints is prohibited and will trigger automatic rate-limiting bans.</li>
+          <li><strong>Flag sharing or collusion</strong> between competing individuals or squads is grounds for immediate disqualification.</li>
+          <li>Attacking any target, IP, or network outside of designated sandbox challenge environments is strictly illegal.</li>
+        </ul>
+      </article>
+
+      <!-- Rule 4: Support & Queries -->
+      <article class="cyber-card cyber-card-corner">
+        <h2 style="color: var(--purple-neon); font-size: 1.3rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>04.</span> ASSISTANCE & ADJUDICATION
+        </h2>
+        <p style="color: var(--text-secondary); line-height: 1.7;">
+          If you encounter a potential bug or infrastructure issue with a challenge, notify the challenge organizers immediately. The decisions of the CYBERTRIX Admin Panel are final.
+        </p>
+      </article>
+    </div>
+  </main>
+
+  <!-- Public Footer -->
+  <footer class="cyber-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>© 2026 CYBERTRIX CTF. ALL RIGHTS RESERVED.</div>
+        <div>RULES & ETHICS POLICY VERIFIED</div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

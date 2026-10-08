@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Challenge Management</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-layout">
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo-icon" style="width: 32px; height: 32px; font-size: 1rem;">◈</div>
+      <div class="sidebar-brand-text">CYBER<span style="color:var(--cyan);">TRIX</span></div>
+      <span class="sidebar-badge">ROOT</span>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li>
+        <a href="dashboard.html" class="sidebar-link">
+          <span class="sidebar-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="players.html" class="sidebar-link">
+          <span class="sidebar-icon">👥</span>
+          <span>Players</span>
+        </a>
+      </li>
+      <li>
+        <a href="challenges.html" class="sidebar-link active">
+          <span class="sidebar-icon">⚡</span>
+          <span>Challenges</span>
+        </a>
+      </li>
+      <li>
+        <a href="submissions.html" class="sidebar-link">
+          <span class="sidebar-icon">📝</span>
+          <span>Submissions</span>
+        </a>
+      </li>
+      <li>
+        <a href="leaderboard.html" class="sidebar-link">
+          <span class="sidebar-icon">🏆</span>
+          <span>Leaderboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="announcements.html" class="sidebar-link">
+          <span class="sidebar-icon">📢</span>
+          <span>Announcements</span>
+        </a>
+      </li>
+      <li>
+        <a href="settings.html" class="sidebar-link">
+          <span class="sidebar-icon">⚙️</span>
+          <span>Event Control</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button class="btn-cyber btn-cyber-danger btn-cyber-sm btn-admin-logout" style="width: 100%;">
+        TERMINATE SESSION
+      </button>
+    </div>
+  </aside>
+
+  <!-- Admin Main Workspace -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <div class="admin-title-area">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="admin-mobile-toggle" aria-label="Toggle Sidebar">☰</button>
+          <h1>CHALLENGE <span style="color: var(--cyan);">MANAGEMENT</span></h1>
+        </div>
+        <p>Deploy, update, re-point, and manage operational challenge lifecycle in real time.</p>
+      </div>
+
+      <div class="admin-system-status">
+        <div id="admin-clock" class="system-clock">--:--:-- UTC</div>
+      </div>
+    </header>
+
+    <!-- Toolbar with ADD CHALLENGE Button (Section 15) -->
+    <section class="admin-toolbar">
+      <div style="font-family: var(--font-tech); font-size: 1.1rem; color: #fff; font-weight: 700;">
+        ACTIVE TARGET INVENTORY
+      </div>
+      <div>
+        <button id="btn-open-add-challenge" class="btn-cyber btn-cyber-primary">
+          [ + ADD CHALLENGE ]
+        </button>
+      </div>
+    </section>
+
+    <!-- Challenges Management Table (Section 15 & 16) -->
+    <section class="cyber-table-container">
+      <table class="cyber-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">ORDER</th>
+            <th>TITLE</th>
+            <th>TYPE</th>
+            <th>CATEGORY</th>
+            <th>DIFFICULTY</th>
+            <th>POINTS</th>
+            <th>STATUS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="admin-challenges-tbody">
+          <!-- Dynamically populated via admin.js -->
+          <tr>
+            <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              LOADING CHALLENGES DATABASE...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Add / Edit Challenge Modal (Requirements 6, 9, 10, 14, 23, 28) -->
+  <div id="challenge-edit-modal" class="modal-overlay">
+    <div class="modal-content cyber-card-corner" style="max-width: 720px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h2 id="modal-challenge-heading" class="modal-title">EDIT CHALLENGE</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+
+      <form id="challenge-admin-form">
+        <input type="hidden" id="edit-ch-id">
+
+        <div style="display: grid; grid-template-columns: 80px 1.5fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="edit-ch-order">ORDER</label>
+            <input type="number" id="edit-ch-order" class="form-control" min="1" step="1" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-ch-title">CHALLENGE TITLE</label>
+            <input type="text" id="edit-ch-title" class="form-control" placeholder="e.g. MIRROR KEYBOARD" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-ch-type">CHALLENGE TYPE</label>
+            <select id="edit-ch-type" class="form-control" required>
+              <option value="mirror-keyboard">Mirror Keyboard</option>
+              <option value="hidden-vault">HIDDEN VAULT (Forensics / Logic)</option>
+              <option value="ascii-hunt">ASCII Hunt (Misc)</option>
+              <option value="metadata-ghost">Metadata Ghost (Steganography)</option>
+              <option value="standard">Standard CTF</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="edit-ch-category">CATEGORY</label>
+            <select id="edit-ch-category" class="form-control" required>
+              <option value="CRYPTO">CRYPTO</option>
+              <option value="WEB">WEB</option>
+              <option value="MISC">MISC</option>
+              <option value="STEGANOGRAPHY">STEGANOGRAPHY</option>
+              <option value="FORENSICS">FORENSICS</option>
+              <option value="OSINT">OSINT</option>
+              <option value="REVERSE ENGINEERING">REVERSE ENGINEERING</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-ch-difficulty">DIFFICULTY</label>
+            <select id="edit-ch-difficulty" class="form-control" required>
+              <option value="EASY">EASY</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HARD">HARD</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-ch-points">POINTS</label>
+            <input type="number" id="edit-ch-points" class="form-control" placeholder="100" min="10" step="10" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-ch-status">STATUS / ENABLED</label>
+            <select id="edit-ch-status" class="form-control" required>
+              <option value="ACTIVE">ACTIVE (Enabled)</option>
+              <option value="LOCKED">LOCKED</option>
+              <option value="HIDDEN">HIDDEN (Disabled)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- CHALLENGE SETTINGS → CHALLENGE LOCK (Section 6) -->
+        <div class="form-group" style="background: rgba(255, 0, 85, 0.06); border: 1px solid rgba(255, 0, 85, 0.28); border-radius: var(--radius-sm); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-family: var(--font-tech); font-size: 0.85rem; color: var(--red-neon); letter-spacing: 1.5px; font-weight: 700;">
+                🔒 CHALLENGE SETTINGS → CHALLENGE LOCK
+              </span>
+              <span id="edit-ch-lock-badge" class="cyber-badge badge-green">UNLOCKED</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <button type="button" id="btn-admin-modal-toggle-lock" class="btn-cyber btn-cyber-sm" style="border-color: var(--red-neon); color: var(--red-neon); font-size: 0.72rem; padding: 0.25rem 0.65rem; cursor: pointer;">
+                [ 🔒 LOCK CHALLENGE ]
+              </button>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <select id="edit-ch-islocked" class="form-control form-control-sm" style="max-width: 240px; font-family: var(--font-code);">
+              <option value="false">UNLOCKED (Normal Access)</option>
+              <option value="true">LOCKED (Admin Global Lock)</option>
+            </select>
+            <small style="color: var(--text-muted); font-size: 0.72rem;">
+              Global lock status for all players. When locked, players cannot start or submit this challenge.
+            </small>
+          </div>
+        </div>
+
+        <!-- Dynamic Challenge Specific Box (Requirements 6, 14, 18) -->
+        <div id="dynamic-fields-box" style="background: rgba(0, 243, 255, 0.05); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(0, 243, 255, 0.2); margin-bottom: 1rem;">
+          <!-- Sub-Tasks Configuration Matrix (for Mirror Keyboard and ASCII Hunt) -->
+          <div id="group-subtasks-editor" style="display: none; margin-bottom: 1.25rem; background: rgba(0, 243, 255, 0.03); border: 1px solid rgba(0, 243, 255, 0.25); border-radius: var(--radius-sm); padding: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; border-bottom: 1px solid rgba(0, 243, 255, 0.15); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-family: var(--font-tech); font-size: 0.95rem; color: var(--cyan); letter-spacing: 1.5px; font-weight: 700;">
+                  ◈ SEQUENTIAL SUB-TASKS CONFIGURATION
+                </span>
+                <span id="admin-subtasks-summary-badge" class="cyber-badge badge-green">SUB-TASKS</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <button type="button" id="btn-admin-add-subtask" class="btn-cyber btn-cyber-sm" style="font-size: 0.75rem; padding: 0.25rem 0.65rem; border-color: var(--green); color: var(--green); cursor: pointer;">
+                  + ADD SUB-TASK
+                </button>
+              </div>
+            </div>
+
+            <div id="admin-subtasks-list-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <!-- Dynamically populated via admin.js -->
+            </div>
+            
+            <div style="margin-top: 0.75rem; font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+              <span>🔒</span> Sub-task flags and target answers are stored in the server-side secrets store and never leaked to normal players.
+            </div>
+          </div>
+
+          <!-- DEDICATED MIRROR KEYBOARD CONFIGURATION (User Request Spec) -->
+          <div id="group-mirror-keyboard-config" style="display: none; background: rgba(0, 243, 255, 0.04); border: 1px solid rgba(0, 243, 255, 0.35); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 0.6rem;">
+              <div style="font-family: var(--font-tech); font-size: 1rem; color: var(--cyan); letter-spacing: 2px; font-weight: 700;">
+                ◈ MIRROR KEYBOARD CONFIGURATION
+              </div>
+              <span class="cyber-badge badge-cyan">OPTICAL REFLECTION MATRIX</span>
+            </div>
+
+            <!-- Question / Prompt input -->
+            <div class="form-group" style="margin-bottom: 0.85rem;">
+              <label class="form-label" for="edit-mk-question" style="color: #ffffff; font-weight: 700; letter-spacing: 1px; font-size: 0.8rem;">
+                🎯 TASK QUESTION / CLUE / OBJECTIVE (DISPLAYED TO PLAYER)
+              </label>
+              <input type="text" id="edit-mk-question" class="form-control" placeholder="e.g. Left is Right, Right is left. Type what you see, not what you mean." style="font-family: var(--font-tech); font-size: 0.95rem;">
+              <small style="color: var(--text-muted); font-size: 0.72rem;">Enter the question or clue text that players see for this task.</small>
+            </div>
+
+            <!-- TARGET WORD / ANSWER TO TYPE (No mirror word) -->
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="edit-mk-targetsentence" style="color: var(--cyan); font-weight: 700; letter-spacing: 1px; font-size: 0.85rem;">
+                ✓ TARGET WORD / ANSWER (WHAT PLAYER TYPES)
+              </label>
+              <textarea id="edit-mk-targetsentence" class="form-control" rows="2" placeholder="e.g. PYTHON" style="font-family: var(--font-code); font-size: 1rem; letter-spacing: 2px;"></textarea>
+              <small style="color: var(--text-muted); font-size: 0.72rem;">The target word or sentence that players must type using the reciprocal mirror keyboard.</small>
+            </div>
+            <input type="hidden" id="edit-mk-mirrorword">
+
+            <!-- Live Target Display Preview -->
+            <div style="margin-bottom: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label class="form-label" style="margin: 0; font-size: 0.78rem; color: var(--text-secondary); font-weight: 700;">
+                  LIVE PREVIEW: PLAYER VIEW VS CORRECT FLAG
+                </label>
+                <button type="button" id="btn-mk-preview" class="btn-cyber btn-cyber-sm" style="font-size: 0.75rem; padding: 0.3rem 0.8rem; border-color: var(--cyan); color: var(--cyan);">
+                  [ ⚡ RE-SYNC ]
+                </button>
+              </div>
+
+              <div id="admin-mk-preview-box" style="background: rgba(3, 8, 20, 0.95); border: 1px dashed rgba(0, 243, 255, 0.4); border-radius: var(--radius-sm); padding: 1rem 1.25rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                <div>
+                  <div style="font-family: var(--font-tech); font-size: 0.7rem; color: var(--cyan); letter-spacing: 1.5px; margin-bottom: 0.35rem;">
+                    // TARGET WORD DISPLAYED TO PLAYERS:
+                  </div>
+                  <div id="admin-mk-preview-text" style="font-family: 'Outfit', 'Courier New', monospace; font-size: 1.25rem; font-weight: 700; letter-spacing: 2px; color: var(--cyan); word-break: break-word;">
+                    PYTHON
+                  </div>
+                </div>
+                <div style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1rem;">
+                  <div style="font-family: var(--font-tech); font-size: 0.7rem; color: var(--green); letter-spacing: 1.5px; margin-bottom: 0.35rem;">
+                    // CORRECT NORMAL FLAG:
+                  </div>
+                  <div id="admin-mk-preview-flag" style="font-family: 'Outfit', 'Courier New', monospace; font-size: 1.25rem; font-weight: 700; letter-spacing: 2px; color: var(--green); word-break: break-word;">
+                    CYBERTRIX{PYTHON}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Answer Evaluation Controls -->
+            <div style="background: rgba(14, 22, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem;">
+              <div style="font-family: var(--font-tech); font-size: 0.82rem; color: var(--cyan); letter-spacing: 1.5px; margin-bottom: 0.75rem; font-weight: 700;">
+                ⚙ ANSWER VALIDATION CONTROLS
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.85rem;">
+                <div>
+                  <label class="form-label" for="edit-mk-casesensitive" style="font-size: 0.75rem;">CASE SENSITIVE</label>
+                  <select id="edit-mk-casesensitive" class="form-control form-control-sm">
+                    <option value="false">OFF (Case-Insensitive)</option>
+                    <option value="true">ON (Exact Match)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label" for="edit-mk-ignoreextraspaces" style="font-size: 0.75rem;">IGNORE EXTRA SPACES</label>
+                  <select id="edit-mk-ignoreextraspaces" class="form-control form-control-sm">
+                    <option value="true">ON (Default)</option>
+                    <option value="false">OFF</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label" for="edit-mk-trimspaces" style="font-size: 0.75rem;">TRIM LEADING/TRAILING</label>
+                  <select id="edit-mk-trimspaces" class="form-control form-control-sm">
+                    <option value="true">ON (Default)</option>
+                    <option value="false">OFF</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Flag Configuration -->
+            <div style="background: rgba(14, 22, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 1rem;">
+              <div style="font-family: var(--font-tech); font-size: 0.82rem; color: var(--green); letter-spacing: 1.5px; margin-bottom: 0.75rem; font-weight: 700;">
+                🚩 FLAG CONFIGURATION
+              </div>
+              <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.85rem;">
+                <div>
+                  <label class="form-label" for="edit-mk-flag" style="color: var(--green); font-size: 0.75rem;">CORRECT FLAG (CYBERTRIX{flag})</label>
+                  <input type="text" id="edit-mk-flag" class="form-control form-control-sm" placeholder="CYBERTRIX{...}" style="font-family: var(--font-code);">
+                  <small style="color: var(--text-muted); font-size: 0.72rem;">Saved securely in challengeSecrets. Never exposed in public player code.</small>
+                </div>
+                <div>
+                  <label class="form-label" for="edit-mk-flagenabled" style="font-size: 0.75rem;">FLAG SUBMISSION</label>
+                  <select id="edit-mk-flagenabled" class="form-control form-control-sm">
+                    <option value="true">ON (Flag Required)</option>
+                    <option value="false">OFF (Direct Sentence Solve)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Hidden legacy field for backward compatibility with scripts -->
+          <div id="group-targetword" class="form-group" style="margin-bottom: 0.75rem; display: none;">
+            <input type="hidden" id="edit-ch-targetword">
+          </div>
+
+          <!-- Field for ASCII Hunt -->
+          <div id="group-asciivalues" class="form-group" style="margin-bottom: 0.75rem; display: none;">
+            <label class="form-label" for="edit-ch-asciivalues" style="color: var(--green); font-weight: 700;">
+              ASCII DECIMAL VALUES (ASCII HUNT CONFIG)
+            </label>
+            <input type="text" id="edit-ch-asciivalues" class="form-control" placeholder="e.g. 67 89 66 69 82" style="font-family: var(--font-code); letter-spacing: 2px;">
+            <small style="color: var(--text-muted); font-size: 0.75rem;">Space-separated ASCII decimal bytes (e.g. 67 89 66 69 82 = CYBER).</small>
+          </div>
+
+          <!-- Field for CYBERTRIX — Hidden Vault (Admin Controls for Hidden Vault ONLY) -->
+          <div id="group-vault-fields" class="form-group" style="margin-bottom: 0.75rem; display: none;">
+            <!-- Vault Password & ASCII Access Code Dynamic Converter (Req: Just like ASCII challenge word -> ASCII value) -->
+            <div style="background: rgba(4, 12, 28, 0.9); border: 1px solid rgba(0, 243, 255, 0.35); border-radius: var(--radius-sm); padding: 1.15rem; margin-bottom: 1.15rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-family: var(--font-tech); font-size: 0.95rem; color: var(--cyan); letter-spacing: 1.5px; font-weight: 700;">
+                    ◈ DYNAMIC VAULT PASSWORD & ASCII ACCESS CODE CONTROLS
+                  </span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                  <span id="admin-vault-bytecount" class="cyber-badge badge-cyan">5 BYTES</span>
+                  <button type="button" id="btn-hv-preview-sync" class="btn-cyber btn-cyber-sm" style="font-size: 0.75rem; padding: 0.25rem 0.65rem; border-color: var(--cyan); color: var(--cyan); cursor: pointer;">
+                    [ ⚡ RE-SYNC ]
+                  </button>
+                </div>
+              </div>
+
+              <!-- Two-column inputs: Word and ASCII HEX values -->
+              <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1rem; margin-bottom: 0.85rem;">
+                <div>
+                  <label class="form-label" for="edit-ch-vaultkeyword" style="color: var(--green); font-weight: 700; font-size: 0.78rem;">
+                    🔑 VAULT KEYWORD (PLAINTEXT WORD)
+                  </label>
+                  <input type="text" id="edit-ch-vaultkeyword" class="form-control" placeholder="e.g. VAULT or CYBERVAULT" style="font-family: var(--font-code); letter-spacing: 2px;">
+                  <small style="color: var(--text-muted); font-size: 0.72rem;">Type word here — ASCII HEX bytes auto-generate in real time.</small>
+                </div>
+
+                <div>
+                  <label class="form-label" for="edit-ch-ciphersequence" style="color: var(--cyan); font-weight: 700; font-size: 0.78rem;">
+                    🔢 ASCII HEX ACCESS CODE (STAGE 1 & 2 TELEMETRY)
+                  </label>
+                  <input type="text" id="edit-ch-ciphersequence" class="form-control" placeholder="e.g. 56 41 55 4C 54" style="font-family: var(--font-code); letter-spacing: 2px;">
+                  <small style="color: var(--text-muted); font-size: 0.72rem;">Space-separated Hexadecimal bytes (e.g. 56 41 55 4C 54) displayed to players in the challenge.</small>
+                </div>
+              </div>
+
+              <!-- Live Player Preview Chips (Stage 2 preview) -->
+              <div style="background: rgba(3, 8, 20, 0.85); border: 1px dashed rgba(0, 243, 255, 0.3); border-radius: 4px; padding: 0.75rem 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+                  <span style="font-family: var(--font-tech); font-size: 0.72rem; color: var(--yellow, #fbbf24); letter-spacing: 1px; font-weight: 700;">
+                    // PLAYER DECODER VIEW (STAGE 2 ASCII CHIPS PREVIEW):
+                  </span>
+                  <span id="admin-vault-word-preview" style="font-family: var(--font-code); font-size: 0.75rem; color: var(--green); font-weight: 700;">
+                    DECODES TO: VAULT
+                  </span>
+                </div>
+                <div id="admin-vault-chips-preview" style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                  <!-- Dynamically rendered via admin.js -->
+                </div>
+              </div>
+
+              <!-- ASCII Reference Table (ascii-code.com) for Admin -->
+              <div style="margin-top: 0.85rem; border: 1px solid rgba(0, 243, 255, 0.25); border-radius: 4px; background: rgba(5, 12, 24, 0.95); overflow: hidden;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.85rem; background: rgba(0, 243, 255, 0.08); border-bottom: 1px solid rgba(0, 243, 255, 0.2);">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-family: var(--font-tech); font-size: 0.76rem; color: var(--cyan); font-weight: 700; letter-spacing: 1px;">
+                      ◈ ASCII TABLE REFERENCE (ASCII-CODE.COM)
+                    </span>
+                    <span class="cyber-badge badge-cyan" style="font-size: 0.62rem;">0–255</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <a href="https://www.ascii-code.com/" target="_blank" rel="noopener noreferrer" class="btn-cyber btn-cyber-sm" style="font-size: 0.68rem; padding: 0.15rem 0.5rem; text-decoration: none; border-color: rgba(0,243,255,0.3); color: var(--text-muted);" title="Visit ascii-code.com">
+                      🌐 ascii-code.com ↗
+                    </a>
+                    <button type="button" id="btn-admin-toggle-ascii-table" class="btn-cyber btn-cyber-sm" style="font-size: 0.68rem; padding: 0.15rem 0.5rem; border-color: rgba(0,243,255,0.4); color: var(--cyan); cursor: pointer;">
+                      [ TOGGLE TABLE ]
+                    </button>
+                  </div>
+                </div>
+
+                <div id="admin-hv-ascii-table-container" style="padding: 0.65rem 0.85rem;">
+                  <!-- Range tabs -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                    <span style="font-family: var(--font-code); font-size: 0.7rem; color: var(--cyan); letter-spacing: 0.5px;">◈ RANGE FILTER:</span>
+                    <div style="display: flex; gap: 0.2rem;">
+                      <button type="button" class="admin-hv-range-btn active" data-range="all" style="background: rgba(0,243,255,0.2); color: var(--cyan); border: 1px solid rgba(0,243,255,0.4); border-radius: 3px; font-size: 0.65rem; padding: 0.2rem 0.45rem; cursor: pointer;">ALL (0-255)</button>
+                      <button type="button" class="admin-hv-range-btn" data-range="control" style="background: rgba(0,243,255,0.05); color: var(--text-muted); border: 1px solid rgba(0,243,255,0.2); border-radius: 3px; font-size: 0.65rem; padding: 0.2rem 0.45rem; cursor: pointer;">0-31</button>
+                      <button type="button" class="admin-hv-range-btn" data-range="printable" style="background: rgba(0,243,255,0.05); color: var(--text-muted); border: 1px solid rgba(0,243,255,0.2); border-radius: 3px; font-size: 0.65rem; padding: 0.2rem 0.45rem; cursor: pointer;">32-127</button>
+                      <button type="button" class="admin-hv-range-btn" data-range="extended" style="background: rgba(0,243,255,0.05); color: var(--text-muted); border: 1px solid rgba(0,243,255,0.2); border-radius: 3px; font-size: 0.65rem; padding: 0.2rem 0.45rem; cursor: pointer;">128-255</button>
+                    </div>
+                  </div>
+
+                  <div style="overflow-y: auto; max-height: 220px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 4px;">
+                    <table style="width: 100%; border-collapse: collapse; font-family: var(--font-code); font-size: 0.72rem; text-align: center;">
+                      <thead>
+                        <tr style="background: rgba(0, 243, 255, 0.12); color: var(--cyan); position: sticky; top: 0; z-index: 1;">
+                          <th style="padding: 4px 6px; color: var(--green);">HEX</th>
+                          <th style="padding: 4px 6px;">DEC</th>
+                          <th style="padding: 4px 6px;">OCT</th>
+                          <th style="padding: 4px 6px;">BIN</th>
+                          <th style="padding: 4px 6px;">SYMBOL</th>
+                          <th style="padding: 4px 6px; text-align: left;">DESCRIPTION</th>
+                          <th style="padding: 4px 6px;">ACTION</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-hv-ascii-tbody">
+                        <!-- Populated dynamically via admin.js from ascii-code.com data -->
+                      </tbody>
+                    </table>
+                  </div>
+                  <small style="color: var(--text-muted); font-size: 0.68rem; display: block; margin-top: 0.35rem;">
+                    💡 Click <b>[+ USE]</b> on any row to append that ASCII code to the Access Code, or edit either input above for real-time auto-conversion.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event Logo Setting -->
+            <div style="margin-bottom: 1rem;">
+              <label class="form-label" for="edit-ch-logourl" style="color: var(--cyan); font-weight: 700; font-size: 0.78rem;">
+                CYBERTRIX EVENT LOGO
+              </label>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="edit-ch-logourl" class="form-control" placeholder="assets/logo/logo.svg">
+                <label class="btn-cyber btn-cyber-sm" style="display: inline-flex; align-items: center; cursor: pointer; white-space: nowrap; margin: 0;">
+                  📁 UPLOAD
+                  <input type="file" id="edit-ch-logofile" accept="image/*,.svg" style="display: none;">
+                </label>
+              </div>
+              <small style="color: var(--text-muted); font-size: 0.72rem;">Path or URL to event logo (clicking reveals hidden file in Stage 4).</small>
+            </div>
+
+            <!-- FAKE / DECOY FILES SECTION (EXACTLY 3) -->
+            <div style="background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 6px; padding: 0.85rem; margin-bottom: 1rem;">
+              <div style="color: var(--cyan); font-size: 0.8rem; font-weight: 700; margin-bottom: 0.6rem; letter-spacing: 1px;">
+                📁 ROOT SECURE STORAGE DECOY FILES (3 FAKE FILES — NO FINAL FLAG)
+              </div>
+              
+              <!-- Fake File 1 -->
+              <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.6rem; margin-bottom: 0.6rem;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 0.4rem;">
+                  <input type="text" id="edit-ch-fakefile1-name" class="form-control form-control-sm" placeholder="Fake File 1 Name (e.g. readme.txt)" style="font-family: var(--font-code);">
+                  <input type="text" id="edit-ch-fakefile1-size" class="form-control form-control-sm" placeholder="Size (e.g. 2.4 KB)">
+                </div>
+                <textarea id="edit-ch-fakefile1-content" class="form-control form-control-sm" rows="2" placeholder="Fake File 1 Content..." style="font-family: var(--font-code); font-size: 0.8rem;"></textarea>
+              </div>
+
+              <!-- Fake File 2 -->
+              <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.6rem; margin-bottom: 0.6rem;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 0.4rem;">
+                  <input type="text" id="edit-ch-fakefile2-name" class="form-control form-control-sm" placeholder="Fake File 2 Name (e.g. system.log)" style="font-family: var(--font-code);">
+                  <input type="text" id="edit-ch-fakefile2-size" class="form-control form-control-sm" placeholder="Size (e.g. 4.8 KB)">
+                </div>
+                <textarea id="edit-ch-fakefile2-content" class="form-control form-control-sm" rows="2" placeholder="Fake File 2 Content..." style="font-family: var(--font-code); font-size: 0.8rem;"></textarea>
+              </div>
+
+              <!-- Fake File 3 -->
+              <div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 0.4rem;">
+                  <input type="text" id="edit-ch-fakefile3-name" class="form-control form-control-sm" placeholder="Fake File 3 Name (e.g. notes.txt)" style="font-family: var(--font-code);">
+                  <input type="text" id="edit-ch-fakefile3-size" class="form-control form-control-sm" placeholder="Size (e.g. 1.2 KB)">
+                </div>
+                <textarea id="edit-ch-fakefile3-content" class="form-control form-control-sm" rows="2" placeholder="Fake File 3 Content..." style="font-family: var(--font-code); font-size: 0.8rem;"></textarea>
+              </div>
+            </div>
+
+            <!-- EVIDENCE.TXT & HIDDEN VAULT FLAG CONTROLS (Requirement 4) -->
+            <div style="background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 6px; padding: 1rem; margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(0, 243, 255, 0.15); padding-bottom: 0.4rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="color: var(--cyan); font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; font-family: var(--font-tech);">
+                    ◈ EVIDENCE.TXT & SECRETS CONTROL
+                  </span>
+                  <span class="cyber-badge badge-green">VAULT SECRET FILE</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label class="form-label" for="edit-ch-evidence-enabled" style="margin: 0; font-size: 0.75rem; color: var(--text-secondary); font-weight: 700;">
+                    EVIDENCE.TXT AVAILABLE:
+                  </label>
+                  <select id="edit-ch-evidence-enabled" class="form-control form-control-sm" style="width: auto; padding: 0.2rem 0.5rem; font-family: var(--font-code);">
+                    <option value="true">ENABLED (Available)</option>
+                    <option value="false">DISABLED (Hidden/Off)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.75rem; margin-bottom: 0.6rem;">
+                <div>
+                  <label class="form-label" for="edit-ch-evidence-name" style="font-size: 0.75rem; color: var(--cyan); font-weight: 700;">
+                    SECRET FILE NAME
+                  </label>
+                  <input type="text" id="edit-ch-evidence-name" class="form-control form-control-sm" value="evidence.txt" style="font-family: var(--font-code);" readonly>
+                </div>
+                <div>
+                  <label class="form-label" for="edit-ch-evidence-size" style="font-size: 0.75rem; color: var(--text-muted);">
+                    FILE SIZE
+                  </label>
+                  <input type="text" id="edit-ch-evidence-size" class="form-control form-control-sm" placeholder="1.8 KB" value="1.8 KB" style="font-family: var(--font-code);">
+                </div>
+              </div>
+
+              <!-- Dedicated Flag Field for evidence.txt (Customizable from Admin Panel) -->
+              <div class="form-group" style="margin-bottom: 0.6rem;">
+                <label class="form-label" for="edit-ch-evidence-flag" style="font-size: 0.78rem; color: var(--green); font-weight: 700;">
+                  FLAG (CYBERTRIX{...})
+                </label>
+                <input type="text" id="edit-ch-evidence-flag" class="form-control form-control-sm" placeholder="CYBERTRIX{HIDDEN_VAULT_2026}" style="font-family: var(--font-code); font-size: 0.85rem; color: var(--green);">
+                <small style="color: var(--text-muted); font-size: 0.72rem;">
+                  The flag displayed inside evidence.txt on the public page and required to solve the challenge.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0.6rem;">
+                <label class="form-label" for="edit-ch-evidence-content" style="font-size: 0.78rem; color: var(--green); font-weight: 700;">
+                  EVIDENCE.TXT CONTENT (CLASSIFIED INTEL & REVEAL TEXT)
+                </label>
+                <textarea id="edit-ch-evidence-content" class="form-control form-control-sm" rows="5" placeholder="Enter evidence.txt content here..." style="font-family: var(--font-code); font-size: 0.8rem;"></textarea>
+                <small style="color: var(--text-muted); font-size: 0.72rem;">
+                  The flag configured below in the TARGET SECRET FLAG field will be securely embedded into this evidence file when discovered by the player.
+                </small>
+              </div>
+            </div>
+
+            <!-- HIDDEN DIRECTORY & CLASSIFIED FILES -->
+            <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 6px; padding: 0.85rem; margin-bottom: 1rem;">
+              <div style="margin-bottom: 0.6rem;">
+                <span style="color: var(--green); font-size: 0.8rem; font-weight: 700; letter-spacing: 1px;">
+                  📂 HIDDEN DIRECTORY & CLASSIFIED FILES (REVEALED ON LOGO CLICK)
+                </span>
+              </div>
+
+              <div style="margin-bottom: 0.6rem;">
+                <label class="form-label" for="edit-ch-hiddendir" style="color: var(--green); font-size: 0.78rem; font-weight: 700;">
+                  HIDDEN DIRECTORY NAME
+                </label>
+                <input type="text" id="edit-ch-hiddendir" class="form-control form-control-sm" placeholder=".hidden/" style="font-family: var(--font-code);">
+                <small style="color: var(--text-muted); font-size: 0.7rem;">Directory path revealed inside /SECURE_STORAGE/ (e.g. .hidden/).</small>
+              </div>
+
+              <!-- Hidden File 1 -->
+              <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.6rem; margin-bottom: 0.6rem;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 0.4rem;">
+                  <input type="text" id="edit-ch-hiddenfile1-name" class="form-control form-control-sm" placeholder="Hidden File 1 Name (e.g. evidence.txt)" value="evidence.txt" style="font-family: var(--font-code);">
+                  <input type="text" id="edit-ch-hiddenfile1-size" class="form-control form-control-sm" placeholder="Size (e.g. 1.8 KB)">
+                </div>
+                <textarea id="edit-ch-hiddenfile1-content" class="form-control form-control-sm" rows="2" placeholder="Hidden File 1 Content..." style="font-family: var(--font-code); font-size: 0.8rem;"></textarea>
+              </div>
+
+              <!-- Hidden File 2 -->
+              <div style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.6rem; margin-bottom: 0.6rem;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 0.4rem;">
+                  <input type="text" id="edit-ch-hiddenfile2-name" class="form-control form-control-sm" placeholder="Hidden File 2 Name (e.g. classified.txt)" style="font-family: var(--font-code);">
+                  <input type="text" id="edit-ch-hiddenfile2-size" class="form-control form-control-sm" placeholder="Size (e.g. 2.3 KB)">
+                </div>
+                <textarea id="edit-ch-hiddenfile2-content" class="form-control form-control-sm" rows="2" placeholder="Hidden File 2 Content..." style="font-family: var(--font-code); font-size: 0.8rem;"></textarea>
+              </div>
+
+              <!-- Hidden File 3 (FINAL FILE CONTAINING FLAG) -->
+              <div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 0.4rem;">
+                  <input type="text" id="edit-ch-hiddenfile3-name" class="form-control form-control-sm" placeholder="Final File Name (e.g. final_message.txt)" style="font-family: var(--font-code); border-color: var(--green);">
+                  <input type="text" id="edit-ch-hiddenfile3-size" class="form-control form-control-sm" placeholder="Size (e.g. 0.8 KB)">
+                </div>
+                <textarea id="edit-ch-hiddenfile3-content" class="form-control form-control-sm" rows="3" placeholder="Final File Content (Contains final flag token)..." style="font-family: var(--font-code); font-size: 0.8rem;"></textarea>
+                <small style="color: var(--green); font-size: 0.7rem;">★ Opening this final file reveals the configured CYBERTRIX flag.</small>
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label" for="edit-ch-successmessage" style="color: var(--cyan); font-weight: 700;">
+                CUSTOM SUCCESS MESSAGE
+              </label>
+              <input type="text" id="edit-ch-successmessage" class="form-control" placeholder="OPERATION COMPLETE // +250 POINTS AWARDED // STATUS: SOLVED ✓">
+            </div>
+
+            <!-- Legacy / Backward compatibility hidden fields -->
+            <input type="hidden" id="edit-ch-secretfilename">
+            <input type="hidden" id="edit-ch-secretcontent">
+          </div>
+
+          <!-- Field for Metadata Ghost (Requirements 4, 5, 6, 13, 23, 24) -->
+          <div id="group-ghost-fields" class="form-group" style="margin-bottom: 0.75rem; display: none;">
+            <label class="form-label" for="edit-ch-imageurl" style="color: var(--cyan); font-weight: 700;">
+              CHALLENGE IMAGE (URL OR UPLOAD)
+            </label>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <input type="text" id="edit-ch-imageurl" class="form-control" placeholder="assets/metadata-ghost-01.png">
+              <label class="btn-cyber btn-cyber-sm" style="display: inline-flex; align-items: center; cursor: pointer; white-space: nowrap; margin: 0;">
+                📁 UPLOAD IMAGE
+                <input type="file" id="edit-ch-imagefile" accept="image/*" style="display: none;">
+              </label>
+            </div>
+            <div id="edit-ch-image-upload-status" style="display: none; font-size: 0.75rem; margin-bottom: 0.5rem; font-family: var(--font-code); color: var(--green);"></div>
+            <div id="edit-ch-image-preview-wrap" style="margin-bottom: 1rem; max-height: 120px; overflow: hidden; border-radius: var(--radius-sm); border: 1px dashed rgba(0, 243, 255, 0.3); display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5);">
+              <img id="edit-ch-image-preview" src="../assets/metadata-ghost-01.png" alt="Preview" style="max-height: 110px; max-width: 100%; object-fit: contain;">
+            </div>
+
+            <label class="form-label" for="edit-ch-hiddenanswer" style="color: var(--cyan); font-weight: 700;">
+              HIDDEN ANSWER (SERVER-SIDE SECRET)
+            </label>
+            <input type="text" id="edit-ch-hiddenanswer" class="form-control" placeholder="e.g. MEET AT MIDNIGHT" style="font-family: var(--font-code); margin-bottom: 1rem;">
+          </div>
+
+          <!-- Case Sensitivity Toggle -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="edit-ch-casesensitive">CASE SENSITIVE EVALUATION</label>
+            <select id="edit-ch-casesensitive" class="form-control">
+              <option value="false">OFF (Case-Insensitive - Default)</option>
+              <option value="true">ON (Strict Exact Match)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- TIMER SETTINGS (Requirement 3: Admin Timer Control for every challenge) -->
+        <div id="admin-timer-settings-box" style="background: rgba(14, 22, 42, 0.7); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid rgba(0, 243, 255, 0.25); margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; border-bottom: 1px solid rgba(0, 243, 255, 0.15); padding-bottom: 0.5rem;">
+            <div style="font-family: var(--font-tech); font-size: 0.9rem; color: var(--cyan); letter-spacing: 1.5px; font-weight: 700;">
+              ⏱ TIMER SETTINGS
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <label class="form-label" for="edit-ch-timer-enabled" style="margin: 0; font-size: 0.78rem; color: var(--text-secondary); font-weight: 700;">
+                ENABLE TIMER:
+              </label>
+              <select id="edit-ch-timer-enabled" class="form-control" style="width: auto; padding: 0.25rem 0.75rem; font-size: 0.85rem; font-family: var(--font-code);">
+                <option value="true">ON</option>
+                <option value="false">OFF</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 0.85rem; align-items: end;">
+            <div>
+              <label class="form-label" for="edit-ch-timer-mins" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                MINUTES
+              </label>
+              <input type="number" id="edit-ch-timer-mins" class="form-control" min="0" max="180" value="5" style="font-family: var(--font-code); font-size: 1rem;">
+            </div>
+            <div>
+              <label class="form-label" for="edit-ch-timer-secs" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                SECONDS
+              </label>
+              <input type="number" id="edit-ch-timer-secs" class="form-control" min="0" max="59" value="0" style="font-family: var(--font-code); font-size: 1rem;">
+            </div>
+            <div>
+              <label class="form-label" for="edit-ch-timer-preset" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                PRESET DURATIONS
+              </label>
+              <select id="edit-ch-timer-preset" class="form-control" style="font-size: 0.85rem;">
+                <option value="">Custom</option>
+                <option value="60">01:00 (1 Min)</option>
+                <option value="300">05:00 (5 Mins - Mirror / ASCII)</option>
+                <option value="420">07:00 (7 Mins - Metadata Ghost)</option>
+                <option value="600">10:00 (10 Mins)</option>
+                <option value="900">15:00 (15 Mins - Hidden Vault)</option>
+                <option value="1800">30:00 (30 Mins)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 0.78rem; font-weight: 700; color: var(--red-neon);">RESET ACTIVE ATTEMPTS</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted);">Invalidates running countdown attempts for this challenge across all players.</div>
+            </div>
+            <button type="button" id="btn-reset-ghost-attempts" class="btn-cyber btn-cyber-sm" style="border-color: var(--red-neon); color: var(--red-neon);">
+              [ RESET ATTEMPTS ]
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-ch-desc">CHALLENGE DESCRIPTION</label>
+          <textarea id="edit-ch-desc" class="form-control" rows="2" placeholder="Provide background story and objective..." required></textarea>
+        </div>
+
+        <!-- 3 Hints as per Requirement 23 (Hidden for ASCII Hunt & Metadata Ghost) -->
+        <div id="admin-hints-box" style="background: rgba(14, 22, 42, 0.6); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin-bottom: 1rem;">
+          <div style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--cyan); letter-spacing: 1.5px; margin-bottom: 0.6rem;">
+            💡 OPERATIONAL HINTS
+          </div>
+          <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label class="form-label" for="edit-ch-hint1" style="font-size: 0.75rem;">HINT 1</label>
+            <input type="text" id="edit-ch-hint1" class="form-control" placeholder="First conceptual clue">
+          </div>
+          <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label class="form-label" for="edit-ch-hint2" style="font-size: 0.75rem;">HINT 2</label>
+            <input type="text" id="edit-ch-hint2" class="form-control" placeholder="Second intermediate clue">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="edit-ch-hint3" style="font-size: 0.75rem;">HINT 3</label>
+            <input type="text" id="edit-ch-hint3" class="form-control" placeholder="Third specific guidance clue">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-ch-flag" style="color: var(--green);">TARGET SECRET FLAG (SEPARATE SECRETS STORE)</label>
+          <input type="text" id="edit-ch-flag" class="form-control" placeholder="CYBERTRIX{secret_flag_value}" required>
+          <small style="color: var(--text-muted); font-size: 0.75rem;">Stored securely in challengeSecrets. Never exposed to normal players.</small>
+        </div>
+
+        <!-- Read-Only Mirror Mapping Reference Box (Requirement 12) -->
+        <div id="modal-mirror-reference" style="background: rgba(8, 14, 28, 0.9); border: 1px solid rgba(0, 255, 157, 0.25); border-radius: var(--radius-sm); padding: 0.85rem 1rem; margin-top: 1rem;">
+          <div style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--green); letter-spacing: 1.5px; margin-bottom: 0.4rem;">
+            ◈ MIRROR KEYBOARD MAPPING REFERENCE
+          </div>
+          <div style="font-family: var(--font-code); font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5;">
+            Q ↔ P &nbsp;|&nbsp; W ↔ O &nbsp;|&nbsp; E ↔ I &nbsp;|&nbsp; R ↔ U &nbsp;|&nbsp; T ↔ Y<br>
+            A ↔ L &nbsp;|&nbsp; S ↔ K &nbsp;|&nbsp; D ↔ J &nbsp;|&nbsp; F ↔ H &nbsp;|&nbsp; G ↔ G<br>
+            Z ↔ M &nbsp;|&nbsp; X ↔ N &nbsp;|&nbsp; C ↔ B &nbsp;|&nbsp; V ↔ V<br>
+            1 ↔ 0 &nbsp;|&nbsp; 2 ↔ 9 &nbsp;|&nbsp; 3 ↔ 8 &nbsp;|&nbsp; 4 ↔ 7 &nbsp;|&nbsp; 5 ↔ 6<br>
+            ! ↔ ) &nbsp;|&nbsp; @ ↔ ( &nbsp;|&nbsp; # ↔ * &nbsp;|&nbsp; $ ↔ &amp; &nbsp;|&nbsp; % ↔ ^
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <button type="button" class="btn-cyber btn-modal-cancel">CANCEL</button>
+          <button type="submit" id="btn-submit-challenge-modal" class="btn-cyber btn-cyber-primary">[ SAVE CHALLENGE ]</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="../js/sound.js"></script>
+  <script src="../js/background.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/ascii_code_data.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

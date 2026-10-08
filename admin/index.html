@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Admin Security Clearance</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 1.5rem;">
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+  <div class="glow-orb glow-orb-purple" style="top: 20%; left: 30%;"></div>
+
+  <main class="cyber-card cyber-card-corner" style="width: 100%; max-width: 460px; border-color: var(--red); box-shadow: 0 0 35px rgba(255, 0, 85, 0.35);">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span class="cyber-badge badge-red badge-pulse" style="margin-bottom: 0.75rem;">
+        <span>⚠</span> RESTRICTED SECTOR // ROOT ACCESS
+      </span>
+      <h1 style="font-size: 1.6rem; letter-spacing: 2px; color: #fff;">
+        CYBERTRIX <span style="color: var(--red);">ADMIN</span>
+      </h1>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.4rem;">
+        Authenticate with level-0 administrative credentials.
+      </p>
+    </div>
+
+    <div id="admin-login-error" class="cyber-badge badge-red" style="display: none; width: 100%; margin-bottom: 1.25rem; padding: 0.85rem 1rem; text-transform: none; line-height: 1.5; font-family: var(--font-code);">
+    </div>
+
+    <!-- Quick root clearance helper -->
+    <div style="background: rgba(0, 243, 255, 0.05); border: 1px dashed rgba(0, 243, 255, 0.3); border-radius: 4px; padding: 0.65rem 0.85rem; margin-bottom: 1.25rem; font-family: var(--font-code); font-size: 0.76rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+      <div>
+        <span style="color: var(--cyan); font-weight: 700;">DEFAULT ROOT CLEARANCE:</span><br>
+        <span style="color: var(--text-secondary);">admin@cybertrix.ctf</span> // <span style="color: var(--text-muted);">CyberAdmin#2026</span>
+      </div>
+      <button type="button" id="btn-quick-admin-fill" class="btn-cyber btn-cyber-xs" style="white-space: nowrap;">
+        AUTO-FILL
+      </button>
+    </div>
+
+    <form id="admin-login-form">
+      <div class="form-group">
+        <label class="form-label" for="admin-email">ADMINISTRATOR EMAIL</label>
+        <input type="text" id="admin-email" class="form-control" placeholder="admin@cybertrix.ctf" required autocomplete="username">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="admin-password">CLEARANCE SECRET KEY</label>
+        <input type="password" id="admin-password" class="form-control" placeholder="Enter admin clearance key" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn-cyber btn-cyber-danger" style="width: 100%; margin-top: 1rem; padding: 0.9rem;">
+        [ VERIFY ROOT CLEARANCE ]
+      </button>
+    </form>
+
+    <div style="margin-top: 1.5rem; text-align: center;">
+      <a href="../index.html" style="font-size: 0.8rem; color: var(--text-muted);">&larr; RETURN TO PUBLIC ARENA</a>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="../js/sound.js"></script>
+  <script src="../js/background.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script>
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag] || tag));
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const form = document.getElementById('admin-login-form');
+      const errBox = document.getElementById('admin-login-error');
+      const quickFillBtn = document.getElementById('btn-quick-admin-fill');
+
+      if (quickFillBtn) {
+        quickFillBtn.addEventListener('click', () => {
+          document.getElementById('admin-email').value = 'admin@cybertrix.ctf';
+          document.getElementById('admin-password').value = 'CyberAdmin#2026';
+          if (window.cyberSound) window.cyberSound.playClick();
+          if (window.showCyberToast) window.showCyberToast("Root credentials loaded into form.", "info");
+        });
+      }
+
+      // Check if already authenticated as authorized admin
+      const u = window.CYBERTRIX_DB.auth.getCurrentUser();
+      if (u) {
+        try {
+          const check = await window.CYBERTRIX_DB.auth.verifyAdminAccess(u.uid, u.email);
+          if (check && check.authorized) {
+            window.location.href = 'dashboard.html';
+            return;
+          } else {
+            // Silently clear participant/stale session so administrator can enter credentials cleanly
+            await window.CYBERTRIX_DB.auth.logout();
+          }
+        } catch (e) {
+          await window.CYBERTRIX_DB.auth.logout();
+        }
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errBox.style.display = 'none';
+
+        const email = document.getElementById('admin-email').value.trim();
+        const pass = document.getElementById('admin-password').value;
+        const btn = form.querySelector('button[type="submit"]');
+
+        btn.disabled = true;
+        btn.textContent = 'CHECKING FIRESTORE AUTHORIZATION...';
+
+        try {
+          // 1. Authenticate user
+          const user = await window.CYBERTRIX_DB.auth.login(email, pass);
+
+          // 2. Verify admins/{uid}: active == true, role == 'admin', email matches auth email
+          const check = await window.CYBERTRIX_DB.auth.verifyAdminAccess(user.uid, user.email);
+          if (!check || !check.authorized) {
+            await window.CYBERTRIX_DB.auth.logout();
+            throw new Error(check && check.reason ? check.reason : "ACCESS DENIED: This account is not an active admin.");
+          }
+
+          window.showCyberToast("Root Access Authorized. Welcome Administrator.", "success");
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 600);
+        } catch (err) {
+          const rawMsg = (err && err.message) ? err.message : "Access Denied: Invalid cyber clearance credentials.";
+          errBox.innerHTML = `<strong>ACCESS DENIED</strong><br>${escapeHTML(rawMsg)}`;
+          errBox.style.display = 'block';
+          window.showCyberToast(rawMsg, "error");
+          btn.disabled = false;
+          btn.textContent = '[ VERIFY ROOT CLEARANCE ]';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

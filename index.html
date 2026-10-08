@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Think. Exploit. Capture The Flag.</title>
+  <meta name="description"
+    content="CYBERTRIX CTF 2026 - A premier futuristic cybersecurity challenge arena. Compete in web security, cryptography, forensics, OSINT, and reverse engineering.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap"
+    media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+  <!-- Ambient Glow & Cyber Grid -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+  <div class="glow-orb glow-orb-cyan"></div>
+  <div class="glow-orb glow-orb-purple"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="cyber-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-logo-icon">◈</div>
+        <span>CYBER<span class="brand-accent">TRIX</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="#announcements" class="nav-link">Announcements</a></li>
+        <li><a href="rules.html" class="nav-link">Rules</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sound-toggle" aria-label="Toggle Cyber Sound">🔊 SOUND: ON</button>
+        <div id="nav-auth-slot">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <a href="register.html" class="btn-cyber btn-cyber-purple btn-cyber-sm"><span>ENLIST</span></a>
+            <a href="login.html" class="btn-cyber btn-cyber-sm"><span>ENTER PORTAL</span></a>
+          </div>
+        </div>
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="cyber-badge badge-green badge-pulse event-status-pill">
+              <span>●</span> CYBERTRIX IS LIVE
+            </span>
+            <span class="cyber-badge badge-purple" style="margin-left: 0.5rem;">
+              EDITION 2026
+            </span>
+          </div>
+
+          <h1 class="hero-title">CYBERTRIX</h1>
+          <div class="hero-tagline">"Think. Exploit. Capture The Flag."</div>
+
+          <p class="hero-desc">
+            Welcome to Cybertrix, a premier cybersecurity challenge arena where participants test their skills across
+            web security, cryptography, forensics, OSINT, reverse engineering, and defensive exploitation.
+          </p>
+
+          <div class="hero-actions">
+            <a href="challenges.html" id="btn-hero-enter-arena" class="btn-cyber btn-cyber-primary btn-cyber-lg">
+              <span>[ ENTER THE ARENA ]</span>
+            </a>
+            <a href="register.html" class="btn-cyber btn-cyber-purple btn-cyber-lg">
+              <span>[ ENLIST OPERATIVE ]</span>
+            </a>
+            <a href="challenges.html" class="btn-cyber btn-cyber-lg">
+              <span>[ VIEW CHALLENGES ]</span>
+            </a>
+          </div>
+
+          <!-- Event Status & Metrics Strip (Global Event Timer) -->
+          <div class="event-status-strip">
+            <div class="status-stat-item">
+              <span class="stat-label">COMPETITION EVENT</span>
+              <span class="stat-value neon-cyan event-name-display">CYBERTRIX 2026</span>
+              <div style="margin-top: 0.35rem;">
+                <span class="cyber-badge badge-purple" style="font-size: 0.68rem;">OFFICIAL TOURNAMENT</span>
+              </div>
+            </div>
+
+            <!-- CTF EVENT TIMER (Section 8: Responsive Neon-Green Cyber Display) -->
+            <div class="status-stat-item" style="min-width: 230px;">
+              <span class="stat-label">CTF EVENT TIMER</span>
+              <div id="global-timer-display" class="stat-value neon-green font-code"
+                style="font-size: 1.85rem; letter-spacing: 2px; line-height: 1.15;">
+                02:00:00
+              </div>
+              <div style="margin-top: 0.35rem;">
+                <span id="global-timer-status-badge" class="cyber-badge badge-green badge-pulse">
+                  <span>●</span> LIVE
+                </span>
+              </div>
+            </div>
+
+            <div class="status-stat-item">
+              <span class="stat-label">REGISTERED OPERATIVES</span>
+              <span class="stat-value neon-purple" id="stats-total-players">0</span>
+              <div style="margin-top: 0.35rem;">
+                <a href="leaderboard.html"
+                  style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-code);">VIEW STANDINGS
+                  &rarr;</a>
+              </div>
+            </div>
+
+            <div class="status-stat-item">
+
+              <span class="stat-label">ACTIVE CHALLENGES</span>
+              <span class="stat-value neon-green" id="stats-total-challenges">10</span>
+              <div style="margin-top: 0.35rem;">
+                <a href="challenges.html"
+                  style="font-size: 0.72rem; color: var(--cyan); font-family: var(--font-code);">ENTER ARENA &rarr;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public Announcements Section (Section 4) -->
+    <section id="announcements" class="announcements-wrapper" style="margin-bottom: 4.5rem;">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span style="color: var(--cyan);">CYBERTRIX</span> // ANNOUNCEMENTS
+          </h2>
+          <div id="announcement-aura" style="display:none;" class="cyber-badge badge-red badge-pulse">
+            LIVE BROADCAST ACTIVE
+          </div>
+        </div>
+
+        <div id="public-announcements-list" class="announcements-grid">
+          <!-- Real-time Firestore stream dynamically injected here -->
+          <div class="cyber-card" style="text-align: center; color: var(--text-muted); font-family: var(--font-code);">
+            CONNECTING TO CYBERTRIX ENCRYPTED BROADCAST FEED...
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Public Footer -->
+  <footer class="cyber-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>CYBER<span style="color:var(--cyan);">TRIX</span></h3>
+          <p>"Think. Exploit. Capture The Flag."<br>
+            A state-of-the-art competitive cybersecurity platform designed for operatives, researchers, and security
+            builders.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer-title">ARENA LINKS</div>
+          <ul class="footer-links">
+            <li><a href="index.html" class="footer-link">Home Arena</a></li>
+            <li><a href="challenges.html" class="footer-link">Challenges</a></li>
+            <li><a href="leaderboard.html" class="footer-link">Live Leaderboard</a></li>
+            <li><a href="rules.html" class="footer-link">Rules & Scoring</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-title">SECURITY STATUS</div>
+          <p style="font-family: var(--font-code); font-size: 0.8rem; color: var(--green); margin-bottom: 0.5rem;">
+            ● MAINFRAME ENCRYPTED
+          </p>
+          <p style="font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">
+            All challenges operate inside sandboxed environments.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 CYBERTRIX CTF. ALL RIGHTS RESERVED.</div>
+        <div style="display:flex; align-items:center; gap: 1rem;">
+          <span style="color: var(--text-muted);">HOSTED SECURELY</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/announcements.js"></script>
+  <script src="js/event.js"></script>
+  <script src="js/leaderboard.js"></script>
+
+  <!-- Real-time Public Stats Synchronization & Arena Navigation -->
+  <script>
+    (function () {
+      function refreshPublicStats() {
+        if (!window.CYBERTRIX_DB) return;
+        const pEl = document.getElementById('stats-total-players');
+        if (pEl && window.CYBERTRIX_DB.players) {
+          pEl.textContent = window.CYBERTRIX_DB.players.getActivePlayerCount();
+        }
+        const cEl = document.getElementById('stats-total-challenges');
+        if (cEl && window.CYBERTRIX_DB.challenges) {
+          window.CYBERTRIX_DB.challenges.getAll().then(list => {
+            if (cEl && list) cEl.textContent = list.length;
+          }).catch(() => { });
+        }
+      }
+
+      function syncEnterArenaLink() {
+        const btn = document.getElementById('btn-hero-enter-arena');
+        if (btn) btn.href = 'challenges.html';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        refreshPublicStats();
+        syncEnterArenaLink();
+      });
+      window.addEventListener('cybertrix_data_changed', refreshPublicStats);
+      window.addEventListener('cybertrix_auth_state_changed', syncEnterArenaLink);
+      window.addEventListener('storage', syncEnterArenaLink);
+
+      // Handle Enter the Arena click: navigate directly to challenges arena
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('#btn-hero-enter-arena');
+        if (target) {
+          e.preventDefault();
+          window.location.href = 'challenges.html';
+        }
+      });
+
+      refreshPublicStats();
+      syncEnterArenaLink();
+    })();
+  </script>
+
+</body>
+
+</html>

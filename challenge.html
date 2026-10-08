@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Challenge Intel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/vault.css">
+</head>
+<body>
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+  <div class="glow-orb glow-orb-cyan"></div>
+  <div class="glow-orb glow-orb-purple"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="cyber-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-logo-icon">◈</div>
+        <span>CYBER<span class="brand-accent">TRIX</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="challenges.html" class="nav-link active">Challenges</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="rules.html" class="nav-link">Rules</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sound-toggle" aria-label="Toggle Sound">🔊 SOUND: ON</button>
+        <div id="nav-auth-slot"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem; max-width: 900px;">
+    <!-- Breadcrumb -->
+    <div style="margin-bottom: 1.5rem; font-family: var(--font-code); font-size: 0.85rem;">
+      <a href="challenges.html" style="color: var(--text-muted);">&larr; BACK TO ARENA</a>
+    </div>
+
+    <div class="cyber-card cyber-card-corner" style="padding: 2.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span id="standalone-category" class="cyber-badge badge-purple">CATEGORY</span>
+            <span id="standalone-difficulty" class="cyber-badge badge-cyan">LEVEL</span>
+            <span id="standalone-points" class="cyber-badge badge-green">PTS</span>
+          </div>
+          <h1 id="standalone-title" style="font-size: 2rem; letter-spacing: 2px;">Loading Target Intel...</h1>
+        </div>
+      </div>
+
+      <div id="standalone-desc" class="challenge-desc-content" style="margin-bottom: 1.5rem;"></div>
+
+      <div id="standalone-clue-box" class="clue-terminal" style="display: none; margin-bottom: 1.5rem;">
+        <div style="color: var(--cyan); font-size: 0.75rem; margin-bottom: 0.5rem;">◈ TARGET DATA DUMP / ARTIFACT</div>
+        <pre id="standalone-clue-content"></pre>
+      </div>
+
+      <!-- Image Artifact Display (for Metadata Ghost or Image-based challenges) -->
+      <div id="standalone-image-box" style="display: none; margin-bottom: 2rem; background: rgba(0, 243, 255, 0.03); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: var(--radius-sm); padding: 1.5rem; text-align: center;">
+        <div style="font-family: var(--font-cyber); font-size: 0.85rem; color: var(--cyan); letter-spacing: 1.5px; margin-bottom: 1rem; text-transform: uppercase;">
+          ◈ FORENSIC TARGET IMAGE ARTIFACT
+        </div>
+        <div style="max-width: 480px; margin: 0 auto 1.25rem; border: 1px solid rgba(0, 243, 255, 0.4); border-radius: 4px; overflow: hidden; background: #000;">
+          <img id="standalone-target-img" src="assets/metadata-ghost-01.png" alt="Forensic Artifact" style="width: 100%; display: block; object-fit: contain;">
+        </div>
+        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+          <a id="standalone-download-btn" href="assets/metadata-ghost-01.png" download="metadata-ghost-01.png" class="btn-cyber btn-cyber-primary" style="text-decoration: none;">
+            ⬇ DOWNLOAD CHALLENGE IMAGE
+          </a>
+          <a href="challenges.html#metadata-ghost" class="btn-cyber btn-cyber-outline" style="text-decoration: none;">
+            🔬 LAUNCH AIR-GAPPED FORENSICS SUITE &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div id="standalone-hint-accordion" class="hints-section" style="margin-bottom: 1.5rem; display: none;">
+        <div class="hint-accordion">
+          <div id="standalone-hint-trigger" class="hint-trigger">
+            <span>💡 OPERATIONAL HINT</span>
+            <span>▼</span>
+          </div>
+          <div id="standalone-hint-body" class="hint-body"></div>
+        </div>
+      </div>
+
+      <!-- ASCII Reference Table (Extracted & Embedded from https://www.ascii-code.com/ - Like Hidden Vault) -->
+      <div id="standalone-ascii-section" style="display: none; margin-bottom: 2rem;">
+        <div class="ascii-ref-table-box hv-ascii-portal-box" style="margin-top: 1rem; max-height: 520px; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 243, 255, 0.3); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-family: var(--font-cyber); font-size: 0.95rem; color: var(--cyan); letter-spacing: 1.5px; font-weight: 800;">
+                ASCII TABLE // ASCII-CODE.COM
+              </span>
+              <span class="cyber-badge badge-cyan" style="font-size: 0.65rem;">0–255 EXTENDED</span>
+              <span id="standalone-ascii-count" class="cyber-badge badge-green" style="font-size: 0.65rem;">256 ROWS</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <div class="btn-group" role="group" style="display: inline-flex; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 4px; overflow: hidden;">
+                <button type="button" id="standalone-tab-table" class="hv-ascii-tab-btn active" style="background: rgba(0, 243, 255, 0.2); color: var(--cyan); border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; font-family: var(--font-tech); cursor: pointer;">TABLE VIEW</button>
+                <button type="button" id="standalone-tab-live" class="hv-ascii-tab-btn" style="background: transparent; color: var(--text-muted); border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; font-family: var(--font-tech); cursor: pointer;">LIVE WEB VIEW</button>
+              </div>
+              <a href="https://www.ascii-code.com/" target="_blank" rel="noopener noreferrer" class="btn-cyber btn-cyber-outline" style="padding: 0.22rem 0.6rem; font-size: 0.72rem; letter-spacing: 0.5px; text-decoration: none;" title="Open https://www.ascii-code.com in new window">
+                🌐 ascii-code.com ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- TABLE VIEW PANEL -->
+          <div id="standalone-panel-table" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+              <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--cyan); letter-spacing: 1px;">◈ CHARACTER RANGE:</span>
+              <div class="hv-ascii-filter-ranges" style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
+                <button type="button" class="standalone-range-btn hv-range-btn active" data-range="all">ALL (0–255)</button>
+                <button type="button" class="standalone-range-btn hv-range-btn" data-range="control">0–31 (CTRL)</button>
+                <button type="button" class="standalone-range-btn hv-range-btn" data-range="printable">32–127 (STD)</button>
+                <button type="button" class="standalone-range-btn hv-range-btn" data-range="extended">128–255 (EXT)</button>
+              </div>
+            </div>
+
+            <div class="ascii-table-scroll" style="overflow-x: auto; overflow-y: auto; flex: 1; max-height: 340px;">
+              <table class="ascii-table-table" style="min-width: 620px; font-size: 0.8rem; width: 100%;">
+                <thead>
+                  <tr>
+                    <th style="width: 65px; color: var(--green);">HEX</th>
+                    <th style="width: 60px; color: var(--cyan);">DEC</th>
+                    <th style="width: 60px;">OCT</th>
+                    <th style="width: 95px;">BIN</th>
+                    <th style="width: 75px;">SYMBOL</th>
+                    <th style="width: 80px;">HTML</th>
+                    <th style="text-align: left; padding-left: 0.75rem;">DESCRIPTION</th>
+                  </tr>
+                </thead>
+                <tbody id="standalone-ascii-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- LIVE WEB VIEW PANEL -->
+          <div id="standalone-panel-live" style="display: none; flex: 1; min-height: 380px; margin-top: 0.5rem; position: relative;">
+            <iframe id="standalone-live-iframe" data-src="https://www.ascii-code.com/" src="about:blank" style="width: 100%; height: 380px; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: var(--radius-sm); background: #ffffff;" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-submission-box">
+        <form id="standalone-flag-form">
+          <label class="form-label" for="standalone-flag-input" style="color: var(--cyan);">SUBMIT CAPTURED FLAG</label>
+          <div class="flag-input-group">
+            <input type="text" id="standalone-flag-input" class="form-control" placeholder="CYBERTRIX{your_flag_here}" required autocomplete="off">
+            <button type="submit" id="standalone-btn-submit" class="btn-cyber btn-cyber-primary">[ SUBMIT FLAG ]</button>
+          </div>
+        </form>
+        <div id="standalone-feedback" class="submission-feedback"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="cyber-footer">
+    <div class="container" style="text-align: center; color: var(--text-muted); font-size: 0.85rem; font-family: var(--font-code);">
+      © 2026 CYBERTRIX CTF // OPERATIONAL TARGET
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/event.js"></script>
+  <script src="js/ascii_code_data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const chId = urlParams.get('id') || 'mirror-keyboard';
+
+      const ch = await window.CYBERTRIX_DB.challenges.getById(chId);
+      if (!ch) {
+        window.location.href = 'challenges.html';
+        return;
+      }
+
+      let standaloneAsciiRange = 'all';
+      function initStandaloneAsciiControls() {
+        const tabTable = document.getElementById('standalone-tab-table');
+        const tabLive = document.getElementById('standalone-tab-live');
+        const panelTable = document.getElementById('standalone-panel-table');
+        const panelLive = document.getElementById('standalone-panel-live');
+        const liveIframe = document.getElementById('standalone-live-iframe');
+
+        if (tabTable && !tabTable._hasTab) {
+          tabTable._hasTab = true;
+          tabTable.addEventListener('click', () => {
+            tabTable.classList.add('active');
+            if (tabLive) tabLive.classList.remove('active');
+            if (panelTable) panelTable.style.display = 'flex';
+            if (panelLive) panelLive.style.display = 'none';
+          });
+        }
+
+        if (tabLive && !tabLive._hasTab) {
+          tabLive._hasTab = true;
+          tabLive.addEventListener('click', () => {
+            tabLive.classList.add('active');
+            if (tabTable) tabTable.classList.remove('active');
+            if (panelLive) panelLive.style.display = 'block';
+            if (panelTable) panelTable.style.display = 'none';
+            if (liveIframe && (liveIframe.src === 'about:blank' || liveIframe.getAttribute('src') === 'about:blank')) {
+              liveIframe.src = liveIframe.dataset.src || 'https://www.ascii-code.com/';
+            }
+          });
+        }
+
+        const rangeBtns = document.querySelectorAll('.standalone-range-btn');
+        rangeBtns.forEach(btn => {
+          if (!btn._hasRange) {
+            btn._hasRange = true;
+            btn.addEventListener('click', () => {
+              rangeBtns.forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              standaloneAsciiRange = btn.dataset.range || 'all';
+              renderStandaloneAsciiTable();
+            });
+          }
+        });
+
+        const searchInp = document.getElementById('standalone-ascii-search');
+        if (searchInp && !searchInp._hasSearch) {
+          searchInp._hasSearch = true;
+          searchInp.addEventListener('input', () => {
+            renderStandaloneAsciiTable();
+          });
+        }
+      }
+
+      function renderStandaloneAsciiTable() {
+        const tbody = document.getElementById('standalone-ascii-tbody');
+        if (!tbody) return;
+        initStandaloneAsciiControls();
+
+        const searchInp = document.getElementById('standalone-ascii-search');
+        const q = (searchInp ? searchInp.value : '').trim().toLowerCase();
+
+        const data = (window.ASCII_CODE_COM_DATA && Array.isArray(window.ASCII_CODE_COM_DATA)) ? window.ASCII_CODE_COM_DATA : [];
+        const filtered = data.filter(item => {
+          if (standaloneAsciiRange === 'control' && !(item.dec >= 0 && item.dec <= 31)) return false;
+          if (standaloneAsciiRange === 'printable' && !(item.dec >= 32 && item.dec <= 127)) return false;
+          if (standaloneAsciiRange === 'extended' && !(item.dec >= 128 && item.dec <= 255)) return false;
+
+          if (!q) return true;
+          return String(item.dec).includes(q) ||
+            String(item.oct).toLowerCase().includes(q) ||
+            String(item.hex).toLowerCase().includes(q) ||
+            String(item.bin).includes(q) ||
+            String(item.symbol).toLowerCase().includes(q) ||
+            String(item.desc || '').toLowerCase().includes(q);
+        });
+
+        const countEl = document.getElementById('standalone-ascii-count');
+        if (countEl) countEl.textContent = `${filtered.length} ROWS`;
+
+        tbody.innerHTML = filtered.map(item => {
+          const isCtrl = item.dec < 32 || item.dec === 127;
+          return `
+            <tr>
+              <td style="color: var(--green); font-family: var(--font-code); font-weight: 700;">${item.hex}</td>
+              <td style="color: var(--cyan); font-family: var(--font-code); font-weight: 700;">${item.dec}</td>
+              <td style="color: var(--text-muted); font-family: var(--font-code);">${item.oct}</td>
+              <td style="color: rgba(0, 243, 255, 0.75); font-family: var(--font-code); font-size: 0.72rem;">${item.bin}</td>
+              <td style="font-weight: 700; color: #ffffff;">
+                ${isCtrl ? `<span class="ascii-ctrl-char">${item.symbol}</span>` : `<span style="color: var(--cyan);">${item.symbol}</span>`}
+              </td>
+              <td style="color: var(--text-muted); font-family: var(--font-code); font-size: 0.72rem;">${item.html || ''}</td>
+              <td style="color: var(--text-secondary); text-align: left; padding-left: 0.75rem; font-size: 0.78rem;">${item.desc || ''}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderChallengeData(currentCh) {
+        document.getElementById('standalone-title').textContent = currentCh.title;
+        document.getElementById('standalone-category').textContent = currentCh.category;
+        document.getElementById('standalone-difficulty').textContent = currentCh.difficulty;
+        document.getElementById('standalone-points').textContent = currentCh.points + ' PTS';
+        document.getElementById('standalone-desc').textContent = currentCh.question || currentCh.description;
+
+        if (currentCh.clueData) {
+          document.getElementById('standalone-clue-box').style.display = 'block';
+          document.getElementById('standalone-clue-content').textContent = currentCh.clueData;
+        }
+
+        if (currentCh.hint) {
+          const acc = document.getElementById('standalone-hint-accordion');
+          acc.style.display = 'block';
+          document.getElementById('standalone-hint-body').textContent = currentCh.hint;
+        }
+
+        // Show Image Artifact Box for Metadata Ghost or image-based challenges
+        const imageBox = document.getElementById('standalone-image-box');
+        if (imageBox) {
+          if (currentCh.id === 'metadata-ghost' || currentCh.imageUrl) {
+            imageBox.style.display = 'block';
+            const img = document.getElementById('standalone-target-img');
+            const dBtn = document.getElementById('standalone-download-btn');
+            const src = currentCh.imageUrl || 'assets/metadata-ghost-01.png';
+            if (img) img.src = src;
+            if (dBtn) {
+              dBtn.href = src;
+              dBtn.setAttribute('download', src.split('/').pop() || 'metadata-ghost-01.png');
+            }
+          } else {
+            imageBox.style.display = 'none';
+          }
+        }
+
+        // Show ASCII Reference Table for ASCII challenges or Hidden Vault
+        const isAsciiTarget = currentCh.type === 'ascii-hunt' || currentCh.id.includes('ascii') || currentCh.asciiHex || currentCh.asciiValues || currentCh.id === 'hidden-vault';
+        const asciiSection = document.getElementById('standalone-ascii-section');
+        if (asciiSection) {
+          if (isAsciiTarget) {
+            asciiSection.style.display = 'block';
+            renderStandaloneAsciiTable();
+          } else {
+            asciiSection.style.display = 'none';
+          }
+        }
+      }
+
+      renderChallengeData(ch);
+
+      const accTrigger = document.getElementById('standalone-hint-trigger');
+      if (accTrigger) {
+        accTrigger.addEventListener('click', () => {
+          const acc = document.getElementById('standalone-hint-accordion');
+          if (acc) acc.querySelector('.hint-accordion').classList.toggle('open');
+        });
+      }
+
+      window.CYBERTRIX_DB.challenges.onSnapshot((allChallenges) => {
+        const fresh = allChallenges.find(c => c.id === chId);
+        if (fresh) renderChallengeData(fresh);
+      });
+
+      const currentUser = window.CYBERTRIX_DB.auth.getCurrentUser();
+      const isSolved = currentUser && currentUser.solvedChallenges && currentUser.solvedChallenges.includes(ch.id);
+      const isDisabled = currentUser && (currentUser.active === false || currentUser.disabled === true || currentUser.status === 'disabled');
+
+      const flagInput = document.getElementById('standalone-flag-input');
+      const submitBtn = document.getElementById('standalone-btn-submit');
+      const feedback = document.getElementById('standalone-feedback');
+
+      // Check Event Timer State (Requirements 10 & 17)
+      const timerConfig = await window.CYBERTRIX_DB.timer.getTimerConfig();
+      const isTimerEnded = !timerConfig.enabled || timerConfig.status === 'ENDED' || (timerConfig.status === 'LIVE' && timerConfig.endTime && (new Date(timerConfig.endTime).getTime() - Date.now() <= 0));
+      const isTimerPaused = timerConfig.status === 'PAUSED';
+      const isTimerNotStarted = timerConfig.status === 'NOT_STARTED';
+
+      if (isDisabled) {
+        feedback.className = 'submission-feedback access-denied';
+        feedback.innerHTML = `<span>⛔</span> ACCOUNT DISABLED: Your CYBERTRIX account has been disabled by the administrator.`;
+        feedback.style.display = 'flex';
+        flagInput.disabled = true;
+        submitBtn.disabled = true;
+        flagInput.placeholder = 'ACCOUNT DISABLED';
+      } else if (isSolved) {
+        feedback.className = 'submission-feedback access-granted';
+        feedback.innerHTML = `<span>✓</span> ACCESS GRANTED // CHALLENGE SOLVED (+${ch.points} PTS)`;
+        feedback.style.display = 'flex';
+        flagInput.disabled = true;
+        submitBtn.disabled = true;
+      } else if (isTimerEnded) {
+        feedback.className = 'submission-feedback access-denied';
+        feedback.innerHTML = `<span>■</span> CTF EVENT HAS ENDED. FLAG SUBMISSION IS CLOSED.`;
+        feedback.style.display = 'flex';
+        flagInput.disabled = true;
+        submitBtn.disabled = true;
+        flagInput.placeholder = 'CTF EVENT HAS ENDED';
+      } else if (isTimerPaused) {
+        feedback.className = 'submission-feedback access-denied';
+        feedback.innerHTML = `<span>⏸</span> EVENT PAUSED: Flag submission is temporarily suspended.`;
+        feedback.style.display = 'flex';
+        flagInput.disabled = true;
+        submitBtn.disabled = true;
+        flagInput.placeholder = 'EVENT PAUSED';
+      } else if (isTimerNotStarted) {
+        feedback.className = 'submission-feedback access-denied';
+        feedback.innerHTML = `<span>◈</span> EVENT NOT STARTED: Flag submission is not yet open.`;
+        feedback.style.display = 'flex';
+        flagInput.disabled = true;
+        submitBtn.disabled = true;
+        flagInput.placeholder = 'EVENT NOT STARTED';
+      }
+
+      document.getElementById('standalone-flag-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (currentUser && (currentUser.active === false || currentUser.disabled === true || currentUser.status === 'disabled')) {
+          feedback.className = 'submission-feedback access-denied';
+          feedback.innerHTML = `<span>⛔</span> ACCOUNT DISABLED: Your CYBERTRIX account has been disabled by the administrator.`;
+          feedback.style.display = 'flex';
+          submitBtn.disabled = true;
+          return;
+        }
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'VERIFYING...';
+
+        try {
+          const res = await window.CYBERTRIX_DB.submissions.submitFlag(ch.id, flagInput.value.trim());
+          if (res.success) {
+            feedback.className = 'submission-feedback access-granted';
+            feedback.innerHTML = `<span>✓</span> ${res.message} (+${res.pointsAwarded} PTS)`;
+            feedback.style.display = 'flex';
+            flagInput.disabled = true;
+            submitBtn.textContent = 'ACCEPTED';
+            window.showCyberToast("ACCESS GRANTED!", "success");
+          } else {
+            feedback.className = 'submission-feedback access-denied';
+            feedback.innerHTML = `<span>✗</span> ${res.message}`;
+            feedback.style.display = 'flex';
+            submitBtn.disabled = false;
+            submitBtn.textContent = '[ SUBMIT FLAG ]';
+            window.showCyberToast("ACCESS DENIED: Invalid flag.", "error");
+          }
+        } catch (err) {
+          feedback.className = 'submission-feedback access-denied';
+          feedback.innerHTML = `<span>⚠</span> ${err.message}`;
+          feedback.style.display = 'flex';
+          submitBtn.disabled = false;
+          submitBtn.textContent = '[ SUBMIT FLAG ]';
+          window.showCyberToast(err.message, "error");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

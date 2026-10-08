@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Announcement Control</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-layout">
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo-icon" style="width: 32px; height: 32px; font-size: 1rem;">◈</div>
+      <div class="sidebar-brand-text">CYBER<span style="color:var(--cyan);">TRIX</span></div>
+      <span class="sidebar-badge">ROOT</span>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li>
+        <a href="dashboard.html" class="sidebar-link">
+          <span class="sidebar-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="players.html" class="sidebar-link">
+          <span class="sidebar-icon">👥</span>
+          <span>Players</span>
+        </a>
+      </li>
+      <li>
+        <a href="challenges.html" class="sidebar-link">
+          <span class="sidebar-icon">⚡</span>
+          <span>Challenges</span>
+        </a>
+      </li>
+      <li>
+        <a href="submissions.html" class="sidebar-link">
+          <span class="sidebar-icon">📝</span>
+          <span>Submissions</span>
+        </a>
+      </li>
+      <li>
+        <a href="leaderboard.html" class="sidebar-link">
+          <span class="sidebar-icon">🏆</span>
+          <span>Leaderboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="announcements.html" class="sidebar-link active">
+          <span class="sidebar-icon">📢</span>
+          <span>Announcements</span>
+        </a>
+      </li>
+      <li>
+        <a href="settings.html" class="sidebar-link">
+          <span class="sidebar-icon">⚙️</span>
+          <span>Event Control</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button class="btn-cyber btn-cyber-danger btn-cyber-sm btn-admin-logout" style="width: 100%;">
+        TERMINATE SESSION
+      </button>
+    </div>
+  </aside>
+
+  <!-- Admin Main Workspace -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <div class="admin-title-area">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="admin-mobile-toggle" aria-label="Toggle Sidebar">☰</button>
+          <h1>ANNOUNCEMENT <span style="color: var(--cyan);">CONTROL</span></h1>
+        </div>
+        <p>Broadcast real-time transmissions and system notices to the public arena interface.</p>
+      </div>
+
+      <div class="admin-system-status">
+        <div id="admin-clock" class="system-clock">--:--:-- UTC</div>
+      </div>
+    </header>
+
+    <!-- Toolbar (Section 17) -->
+    <section class="admin-toolbar">
+      <div style="font-family: var(--font-tech); font-size: 1.1rem; color: #fff; font-weight: 700;">
+        ACTIVE TRANSMISSIONS
+      </div>
+      <div>
+        <button id="btn-open-add-announcement" class="btn-cyber btn-cyber-primary">
+          [ + NEW TRANSMISSION ]
+        </button>
+      </div>
+    </section>
+
+    <!-- Announcements Table (Section 17) -->
+    <section class="cyber-table-container">
+      <table class="cyber-table">
+        <thead>
+          <tr>
+            <th>TITLE</th>
+            <th>MESSAGE PREVIEW</th>
+            <th>IMPORTANT</th>
+            <th>STATUS</th>
+            <th>CREATED</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="admin-announcements-tbody">
+          <!-- Dynamically populated via admin.js -->
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              LOADING BROADCAST REGISTRY...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Add / Edit Announcement Modal (Section 17) -->
+  <div id="announcement-modal" class="modal-overlay">
+    <div class="modal-content cyber-card-corner" style="max-width: 580px;">
+      <div class="modal-header">
+        <h2 id="modal-ann-heading" class="modal-title">BROADCAST NEW ANNOUNCEMENT</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+
+      <form id="announcement-form">
+        <input type="hidden" id="edit-ann-id">
+
+        <div class="form-group">
+          <label class="form-label" for="edit-ann-title">TRANSMISSION TITLE</label>
+          <input type="text" id="edit-ann-title" class="form-control" placeholder="e.g. Challenge 05 Unlocked!" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-ann-message">TRANSMISSION MESSAGE</label>
+          <textarea id="edit-ann-message" class="form-control" rows="4" placeholder="Enter message text for operatives..." required></textarea>
+        </div>
+
+        <div style="display: flex; gap: 2rem; margin: 1.25rem 0;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-family: var(--font-tech); font-size: 0.95rem;">
+            <input type="checkbox" id="edit-ann-important" style="accent-color: var(--red); width: 18px; height: 18px;">
+            <span style="color: var(--red);">MARK AS IMPORTANT (ALERT BADGE)</span>
+          </label>
+
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-family: var(--font-tech); font-size: 0.95rem;">
+            <input type="checkbox" id="edit-ann-published" checked style="accent-color: var(--cyan); width: 18px; height: 18px;">
+            <span style="color: var(--cyan);">PUBLISH IMMEDIATELY</span>
+          </label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <button type="button" class="btn-cyber btn-modal-cancel">CANCEL</button>
+          <button type="submit" class="btn-cyber btn-cyber-primary">[ TRANSMIT BROADCAST ]</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="../js/sound.js"></script>
+  <script src="../js/background.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Admin authorization rule:
+    // User must be authenticated, UID must exist in /admins/{uid} OR
+    // match configured primary admin email 'admin@cybertrix.ctf'.
+    function isAdmin() {
+      return isAuthenticated() && (
+        (request.auth.token.email != null && request.auth.token.email == 'admin@cybertrix.ctf') ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active == true &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin' &&
+         (request.auth.token.email == null || get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.email == request.auth.token.email))
+      );
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Admins Collection:
+    // Only active admins can read all admins and modify admins.
+    // Users can read their own admin document to verify their status.
+    match /admins/{adminId} {
+      allow read: if isAdmin() || (isAuthenticated() && request.auth.uid == adminId);
+      allow write: if isAdmin() || (isAuthenticated() && request.auth.token.email == 'admin@cybertrix.ctf');
+    }
+
+    // Event Settings: Publicly readable, only admin writable
+    match /eventSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Site Settings / Event Timer:
+    // Players: READ only
+    // Active admins: READ + CREATE + UPDATE
+    match /siteSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Announcements: Public can read published ones, admin has full access
+    match /announcements/{announcementId} {
+      allow read: if resource == null || resource.data.published == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Hidden Vault configuration:
+    match /hiddenVault/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Challenges: Public can read ACTIVE and LOCKED challenges
+    // Only Admin can create, update, or delete challenges
+    match /challenges/{challengeId} {
+      allow read: if resource == null || resource.data.status != 'HIDDEN' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Challenge Secrets:
+    // Sensitive challenge validation data (flags, aliases, answers).
+    // Not exposed to unauthenticated guests. Never in public challenges doc.
+    // Read: Authenticated players (for client-side flag validation).
+    // Write: Strictly Admin only.
+    match /challengeSecrets/{challengeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Users collection:
+    // Public can read leaderboard fields
+    // Admin can modify player status (disabled / active) or points
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAdmin() || (
+        isAuthenticated() && request.auth.uid == userId &&
+        request.resource.data.role == resource.data.role &&
+        request.resource.data.disabled == resource.data.disabled &&
+        request.resource.data.active == resource.data.active
+      );
+      allow delete: if isAdmin();
+
+      // Nested Player Progression:
+      match /progress/{challengeId} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // Top-Level Player Progression (progress/{userId}/challenges/{challengeId}):
+    match /progress/{userId}/challenges/{challengeId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    // Submissions:
+    // Authenticated active players can submit flag attempts.
+    // Disabled players (active == false, disabled == true, status == 'disabled') are strictly barred from creating flag submissions.
+    // Admin can read all; Users can read their own.
+    match /submissions/{submissionId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() &&
+                       request.resource.data.userId == request.auth.uid &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.active == true &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.disabled != true &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status != 'disabled';
+      allow update, delete: if isAdmin();
+    }
+
+    // Challenge Attempts & Timers:
+    // Players can only read and update their own attempts; Admin has full access.
+    // Disabled players cannot initiate or update attempts.
+    match /challengeAttempts/{attemptId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow create, update: if isAuthenticated() &&
+                       request.resource.data.userId == request.auth.uid &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.active == true &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.disabled != true &&
+                       get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status != 'disabled';
+      allow delete: if isAdmin();
+    }
+  }
+}
+

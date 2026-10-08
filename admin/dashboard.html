@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Admin Control Center</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-layout">
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+
+  <!-- Admin Sidebar (Section 19) -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo-icon" style="width: 32px; height: 32px; font-size: 1rem;">◈</div>
+      <div class="sidebar-brand-text">CYBER<span style="color:var(--cyan);">TRIX</span></div>
+      <span class="sidebar-badge">ROOT</span>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li>
+        <a href="dashboard.html" class="sidebar-link active">
+          <span class="sidebar-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="players.html" class="sidebar-link">
+          <span class="sidebar-icon">👥</span>
+          <span>Players</span>
+        </a>
+      </li>
+      <li>
+        <a href="challenges.html" class="sidebar-link">
+          <span class="sidebar-icon">⚡</span>
+          <span>Challenges</span>
+        </a>
+      </li>
+      <li>
+        <a href="submissions.html" class="sidebar-link">
+          <span class="sidebar-icon">📝</span>
+          <span>Submissions</span>
+        </a>
+      </li>
+      <li>
+        <a href="leaderboard.html" class="sidebar-link">
+          <span class="sidebar-icon">🏆</span>
+          <span>Leaderboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="announcements.html" class="sidebar-link">
+          <span class="sidebar-icon">📢</span>
+          <span>Announcements</span>
+        </a>
+      </li>
+      <li>
+        <a href="settings.html" class="sidebar-link">
+          <span class="sidebar-icon">⚙️</span>
+          <span>Event Control</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button class="btn-cyber btn-cyber-danger btn-cyber-sm btn-admin-logout" style="width: 100%;">
+        TERMINATE SESSION
+      </button>
+    </div>
+  </aside>
+
+  <!-- Admin Main Workspace -->
+  <main class="admin-main">
+    <!-- Header (Section 12) -->
+    <header class="admin-header">
+      <div class="admin-title-area">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="admin-mobile-toggle" aria-label="Toggle Sidebar">☰</button>
+          <h1>CYBERTRIX <span style="color: var(--cyan);">// ADMIN CONTROL CENTER</span></h1>
+        </div>
+        <p>Operational oversight, telemetry, challenge lifecycle, and participant scoring.</p>
+      </div>
+
+      <div class="admin-system-status">
+        <span class="cyber-badge badge-green badge-pulse">● FIRESTORE CLOUD ONLINE</span>
+        <div id="admin-clock" class="system-clock">--:--:-- UTC</div>
+      </div>
+    </header>
+
+    <!-- Global CTF Event Timer Monitor Banner (Section 4 & 16) -->
+    <section class="cyber-card cyber-card-corner" style="border-color: rgba(0, 255, 157, 0.4); box-shadow: 0 0 25px rgba(0, 255, 157, 0.12); margin-bottom: 2rem; padding: 1.25rem 1.75rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.25rem;">
+            <span style="font-family: var(--font-tech); font-size: 0.85rem; letter-spacing: 1.5px; color: var(--text-muted); text-transform: uppercase;">
+              GLOBAL CTF EVENT TIMER
+            </span>
+            <span id="admin-timer-status-preview" class="status-pill status-active">LIVE</span>
+          </div>
+          <div id="admin-timer-remaining-preview" class="font-code" style="font-size: 2.2rem; font-weight: 800; color: var(--green); text-shadow: 0 0 15px rgba(0, 255, 157, 0.6); letter-spacing: 3px; line-height: 1.1;">
+            02:00:00
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+          <button type="button" id="dash-btn-timer-start" class="btn-cyber btn-cyber-primary btn-cyber-sm">
+            ▶ START / RESUME
+          </button>
+          <button type="button" id="dash-btn-timer-pause" class="btn-cyber btn-cyber-sm" style="border-color: var(--yellow); color: var(--yellow);">
+            ⏸ PAUSE
+          </button>
+          <button type="button" id="dash-btn-timer-reset" class="btn-cyber btn-cyber-danger btn-cyber-sm">
+            ↺ RESET
+          </button>
+          <a href="settings.html" class="btn-cyber btn-cyber-sm">
+            ⚙ CONFIGURE &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Statistics (Section 12) -->
+    <section class="admin-stats-grid">
+      <!-- Total Players -->
+      <div class="admin-stat-card stat-cyan cyber-card-corner">
+        <div class="stat-head">TOTAL PLAYERS</div>
+        <div id="stat-total-players" class="stat-counter" style="color: var(--cyan);">0</div>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Enlisted in database</small>
+      </div>
+
+      <!-- Active Players -->
+      <div class="admin-stat-card stat-green cyber-card-corner">
+        <div class="stat-head">ACTIVE PLAYERS</div>
+        <div id="stat-active-players" class="stat-counter" style="color: var(--green);">0</div>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">With solved flags</small>
+      </div>
+
+      <!-- Total Challenges -->
+      <div class="admin-stat-card stat-purple cyber-card-corner">
+        <div class="stat-head">TOTAL CHALLENGES</div>
+        <div id="stat-total-challenges" class="stat-counter" style="color: #d18eff;">0</div>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Deployed across arena</small>
+      </div>
+
+      <!-- Total Submissions -->
+      <div class="admin-stat-card stat-yellow cyber-card-corner">
+        <div class="stat-head">TOTAL SUBMISSIONS</div>
+        <div id="stat-total-submissions" class="stat-counter" style="color: var(--yellow);">0</div>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Incoming flag audits</small>
+      </div>
+
+      <!-- Solved Challenges -->
+      <div class="admin-stat-card stat-green cyber-card-corner">
+        <div class="stat-head">CHALLENGES SOLVED</div>
+        <div id="stat-total-solves" class="stat-counter" style="color: var(--green);">0</div>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Verified flag captures</small>
+      </div>
+
+      <!-- Points Awarded -->
+      <div class="admin-stat-card stat-red cyber-card-corner">
+        <div class="stat-head">TOTAL POINTS AWARDED</div>
+        <div id="stat-points-awarded" class="stat-counter" style="color: #fff;">0</div>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Distributed score pool</small>
+      </div>
+    </section>
+
+    <!-- Quick Navigation Hub -->
+    <section style="margin-bottom: 2.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+      <div class="cyber-card cyber-card-corner">
+        <h3 style="font-size: 1.15rem; color: var(--cyan); margin-bottom: 0.5rem;">⚡ RAPID CHALLENGE CREATOR</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Deploy a new simulated CTF challenge into the live arena with instant Firestore synchronization.
+        </p>
+        <a href="challenges.html" class="btn-cyber btn-cyber-sm btn-cyber-primary">+ ADD NEW CHALLENGE</a>
+      </div>
+
+      <div class="cyber-card cyber-card-corner">
+        <h3 style="font-size: 1.15rem; color: var(--purple-neon); margin-bottom: 0.5rem;">📢 TRANSMIT ANNOUNCEMENT</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Broadcast an urgent system notice or challenge unlock bulletin to all competitors in real time.
+        </p>
+        <a href="announcements.html" class="btn-cyber btn-cyber-sm btn-cyber-purple">+ BROADCAST NOTICE</a>
+      </div>
+
+      <div class="cyber-card cyber-card-corner">
+        <h3 style="font-size: 1.15rem; color: var(--yellow); margin-bottom: 0.5rem;">⚙️ EVENT CONTROLS</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Configure arena status (UPCOMING, LIVE, ENDED), toggle registration, or manage timer endpoints.
+        </p>
+        <a href="settings.html" class="btn-cyber btn-cyber-sm">MANAGE SETTINGS</a>
+      </div>
+    </section>
+
+    <!-- Recent Platform Activity Feed -->
+    <section class="cyber-card cyber-card-corner">
+      <div class="section-header" style="margin-bottom: 1.25rem;">
+        <h2 class="section-title" style="font-size: 1.25rem;">
+          <span style="color: var(--cyan);">RECENT</span> SUBMISSION TELEMETRY
+        </h2>
+        <a href="submissions.html" style="font-family: var(--font-code); font-size: 0.8rem;">VIEW ALL SUBMISSIONS &rarr;</a>
+      </div>
+
+      <div class="cyber-table-container" style="border: none; box-shadow: none;">
+        <table class="cyber-table">
+          <thead>
+            <tr>
+              <th>PLAYER</th>
+              <th>CHALLENGE</th>
+              <th>STATUS</th>
+              <th>TIMESTAMP</th>
+            </tr>
+          </thead>
+          <tbody id="admin-recent-activity-tbody">
+            <!-- Dynamically populated via admin.js -->
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                FETCHING TELEMETRY...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="../js/sound.js"></script>
+  <script src="../js/background.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/firebase.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

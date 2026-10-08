@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Challenge Arena</title>
+  <meta name="description" content="Engage in CYBERTRIX CTF interactive cybersecurity challenges.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/vault.css">
+</head>
+<body>
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+  <div class="glow-orb glow-orb-cyan"></div>
+  <div class="glow-orb glow-orb-purple"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="cyber-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-logo-icon">◈</div>
+        <span>CYBER<span class="brand-accent">TRIX</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="challenges.html" class="nav-link active">Challenges</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="rules.html" class="nav-link">Rules</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sound-toggle" aria-label="Toggle Sound">🔊 SOUND: ON</button>
+        <div id="nav-auth-slot"></div>
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+
+    <!-- Disabled Account Alert Banner (Requirement 3) -->
+    <div id="account-disabled-banner" class="account-disabled-banner" style="display: none;">
+      <div class="account-disabled-content">
+        <span class="account-disabled-icon">⛔</span>
+        <div>
+          <div class="account-disabled-title">ACCOUNT DISABLED</div>
+          <div class="account-disabled-desc">Your CYBERTRIX account has been disabled by the administrator. Participation in challenges and flag submissions are restricted.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 1: CHALLENGES LIST VIEW (Default Active View - Requirement 17, 29) -->
+    <!-- =================================================================== -->
+    <div id="view-challenge-list" style="display: block;">
+      <!-- Arena Header -->
+      <header style="margin-bottom: 2.5rem; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+          <span class="cyber-badge badge-green badge-pulse event-status-pill">
+            <span>●</span> ARENA ACTIVE
+          </span>
+          <span class="cyber-badge badge-cyan">GLOBAL EVENT TIMER INTEGRATED</span>
+        </div>
+        <h1 style="font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: 2px;">
+          CYBERTRIX <span style="color: var(--cyan);">// CHALLENGES ARENA</span>
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 1rem; max-width: 650px; margin: 0.4rem auto 0; line-height: 1.6;">
+          Breach security perimeters in sequence. Select a challenge to review mission dossier and commence operation.
+        </p>
+      </header>
+
+      <!-- Challenge Cards Grid (Requirement 17 & 23) -->
+      <div id="challenges-list-grid" class="challenge-list-grid">
+        <!-- Rendered dynamically via challenges.js -->
+        <div class="cyber-card" style="text-align: center; color: var(--text-muted); padding: 3rem; grid-column: 1 / -1;">
+          CONNECTING TO ENCRYPTED SECTOR MATRIX...
+        </div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 2: CHALLENGE DETAILS MODAL (Requirements 18, 19, 20)           -->
+    <!-- =================================================================== -->
+    <div id="challenge-details-modal" class="modal-overlay">
+      <div class="challenge-details-box cyber-card-corner">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 1rem;">
+          <div>
+            <span id="detail-ch-num" class="cyber-badge badge-cyan" style="margin-bottom: 0.4rem; font-family: var(--font-cyber);">CHALLENGE #01</span>
+            <h2 id="detail-ch-title" style="font-family: var(--font-cyber); font-size: 1.7rem; color: #ffffff; letter-spacing: 2px; margin-top: 0.2rem;">
+              CHALLENGE TITLE
+            </h2>
+          </div>
+          <button type="button" class="modal-close" onclick="window.closeChallengeDetails()">&times;</button>
+        </div>
+
+        <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+          <span id="detail-ch-category" class="cyber-badge badge-purple">CRYPTO</span>
+          <span id="detail-ch-difficulty" class="cyber-badge badge-cyan">EASY</span>
+          <span id="detail-ch-points" class="cyber-badge badge-green">100 POINTS</span>
+          <span id="detail-ch-status" class="cyber-badge badge-cyan">AVAILABLE</span>
+        </div>
+
+        <div style="background: rgba(4, 8, 16, 0.7); border: 1px solid rgba(0, 243, 255, 0.15); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="font-family: var(--font-tech); font-size: 0.78rem; color: var(--cyan); letter-spacing: 1.5px; margin-bottom: 0.4rem;">
+            MISSION DIRECTIVE
+          </div>
+          <p id="detail-ch-desc" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; margin-bottom: 0.75rem;">
+            Challenge description.
+          </p>
+          <div id="detail-ch-timer-box" style="display: none; padding-top: 0.75rem; border-top: 1px dashed rgba(255,255,255,0.1);">
+            <span style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--cyan);">OPERATIONAL TIME LIMIT:</span>
+            <strong id="detail-ch-timer-val" style="font-family: var(--font-cyber); color: #ffffff; letter-spacing: 2px; margin-left: 0.5rem;">05:00</strong>
+            <small style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Timer runs independently for this challenge upon opening workspace.</small>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn-cyber" onclick="window.closeChallengeDetails()">CANCEL</button>
+          <button type="button" id="btn-start-challenge" class="btn-cyber btn-cyber-primary" onclick="window.startCurrentChallenge()">
+            [ START CHALLENGE ]
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 3: ACTIVE CHALLENGE WORKSPACE (Opened on START CHALLENGE - Req 19) -->
+    <!-- =================================================================== -->
+    <div id="view-challenge-workspace" style="display: none;">
+      
+      <!-- Top Navigation Bar -->
+      <div class="workspace-top-bar">
+        <button type="button" class="btn-cyber btn-cyber-sm" onclick="window.backToChallengeList()">
+          &larr; BACK TO CHALLENGES
+        </button>
+
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <span id="ws-ch-order-badge" class="cyber-badge badge-cyan">01</span>
+          <span id="ws-ch-title-badge" style="font-family: var(--font-cyber); color: #ffffff; font-size: 0.95rem; letter-spacing: 1.5px;">MIRROR KEYBOARD</span>
+          <span id="ws-ch-category-badge" class="cyber-badge badge-purple">CRYPTO</span>
+          <span id="ws-ch-points-badge" class="cyber-badge badge-green">100 PTS</span>
+          <div id="ws-ch-solved-badge" style="display: none;">
+            <span class="cyber-badge badge-green">✓ SOLVED</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Universal Challenge Timer Bar (Requirement 2: Every challenge has its own timer) -->
+      <div id="ws-challenge-timer-bar" class="challenge-timer-container" style="display: none;">
+        <div class="challenge-timer-box">
+          <div class="challenge-timer-indicator">
+            <span class="pulse-dot"></span>
+            <span class="timer-label">TIME REMAINING:</span>
+            <span id="ws-timer-countdown" class="timer-countdown">00:00</span>
+          </div>
+          <div class="challenge-timer-controls">
+            <button type="button" id="btn-challenge-timer-pause" class="btn-cyber btn-cyber-xs btn-timer-ctrl">⏸ PAUSE</button>
+            <button type="button" id="btn-challenge-timer-resume" class="btn-cyber btn-cyber-xs btn-timer-ctrl" style="display: none;">▶ RESUME</button>
+            <button type="button" id="btn-challenge-timer-restart" class="btn-cyber btn-cyber-xs btn-timer-ctrl">↻ RESTART</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Challenge Card -->
+      <div class="mirror-arena-container">
+        <div class="mk-challenge-card cyber-card-corner" style="position: relative;">
+
+          <!-- Challenge Expired Overlay (Requirement 2: Timeout handling) -->
+          <div id="challenge-expired-overlay" class="challenge-expired-backdrop" style="display: none;">
+            <div class="challenge-expired-card">
+              <div class="expired-glitch-icon">⚠️</div>
+              <h3 class="expired-title">TIME EXPIRED</h3>
+              <p class="expired-desc">
+                The allocated operational window for this challenge has lapsed.<br>
+                Current attempt is marked as expired and flag submission is suspended.
+              </p>
+              <div class="expired-actions">
+                <button type="button" id="btn-expired-restart" class="btn-cyber btn-cyber-primary" onclick="window.restartActiveChallengeTimer()">
+                  [ ↻ RESTART CHALLENGE ]
+                </button>
+                <button type="button" class="btn-cyber" onclick="window.backToChallengeList()">
+                  &larr; CHALLENGE INVENTORY
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================================================================== -->
+          <!-- WORKSPACE: MIRROR KEYBOARD (Interactive Reciprocal Keystroke Matrix)  -->
+          <!-- =================================================================== -->
+          <div id="workspace-mirror-keyboard" class="challenge-workspace" style="display: none;">
+            
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+              <h2 id="mk-workspace-title" style="font-family: var(--font-cyber); font-size: 1.8rem; letter-spacing: 3px; color: #ffffff; margin-bottom: 0.4rem;">
+                MIRROR KEYBOARD
+              </h2>
+              <p id="mk-workspace-desc" style="color: var(--text-secondary); font-size: 0.95rem; max-width: 650px; margin: 0 auto; line-height: 1.6;">
+                Decipher keystrokes on the inverted reciprocal mirror keyboard array across 3 progressive sub-tasks. Type the target transmission to capture the flags.
+              </p>
+            </div>
+
+            <!-- Mirror Keyboard Sub-Tasks Progression Card -->
+            <div id="mk-subtasks-card" class="subtasks-matrix-card" style="margin-bottom: 1.5rem;">
+              <div class="subtasks-header-row">
+                <div class="subtasks-headline-wrap">
+                  <div class="subtasks-top-label">MIRROR KEYBOARD</div>
+                  <div class="subtasks-divider-line">────────────────────</div>
+                </div>
+                <div class="subtasks-progress-badge">
+                  <span class="subtasks-prog-label">Progress:</span>
+                  <span id="mk-subtasks-progress-val" class="subtasks-prog-val">1 / 3</span>
+                </div>
+              </div>
+
+              <!-- List of Sub-Tasks (Dynamically populated) -->
+              <div id="mk-subtasks-list" class="subtasks-items-list"></div>
+
+              <!-- Current Active Sub-task Banner -->
+              <div id="mk-current-subtask-banner" class="subtask-current-focus-bar">
+                <span class="pulse-dot-cyan"></span>
+                <span id="mk-current-subtask-text">[ CURRENT SUB-TASK: Sub-task 1 — 100 pts ]</span>
+              </div>
+
+              <!-- Completed Challenge Banner -->
+              <div id="mk-subtasks-complete-banner" class="subtasks-complete-banner" style="display: none;">
+                <div class="complete-headline">CHALLENGE COMPLETED ✓</div>
+                <div class="complete-sub">+300 POINTS</div>
+              </div>
+            </div>
+
+            <!-- Target Sentence Display Container -->
+            <div id="mk-target-sentence-container" class="mk-target-sentence-container" style="background: rgba(4, 8, 18, 0.85); border: 1px solid rgba(0, 243, 255, 0.35); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 0.6rem; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span class="pulse-dot-cyan"></span>
+                  <span style="font-family: var(--font-tech); font-size: 0.85rem; color: var(--cyan); letter-spacing: 2px; font-weight: 700;">
+                    ◈ TARGET TRANSMISSION // RECIPROCAL KEYBOARD
+                  </span>
+                </div>
+                <span id="mk-sentence-progress-badge" class="cyber-badge badge-cyan">SUB-TASK 1 OF 3 // ACTIVE</span>
+              </div>
+              <!-- Active Task Question / Prompt Display -->
+              <div id="mk-task-question-display" style="font-family: var(--font-tech); font-size: 0.95rem; color: #ffffff; margin-bottom: 0.85rem; padding: 0.75rem 1rem; background: rgba(0, 243, 255, 0.08); border-left: 3px solid var(--cyan); border-radius: 4px; line-height: 1.5; text-align: center;">
+                <span id="mk-task-question-text" style="color: #ffffff; letter-spacing: 0.5px;">Left is Right, Right is left. Type what you see, not what you mean.</span><!-- Type the target word PYTHON -->
+              </div>
+
+              <div style="font-family: var(--font-tech); font-size: 0.72rem; color: var(--text-muted); letter-spacing: 1.5px; text-align: center; margin-bottom: 0.25rem;">
+                // TARGET WORD TO TYPE:
+              </div>
+              <div id="mk-target-sentence-display" class="mk-target-sentence-display" style="font-family: var(--font-code); font-size: 1.25rem; font-weight: 700; color: #ffffff; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0, 243, 255, 0.6); text-align: center; padding: 0.75rem 0;">
+                PYTHON
+              </div>
+              <div style="font-family: var(--font-tech); font-size: 0.72rem; color: var(--cyan); letter-spacing: 1.5px; text-align: center; margin-top: 0.4rem;">
+                ⚠ RECIPROCAL KEY MATRIX ACTIVE: EACH KEY PRESS INVERTS TO ITS PAIR
+              </div>
+            </div>
+
+            <!-- Input Stream Terminal (Requirement 1: Show all typed letters) -->
+            <div class="mk-stream-terminal">
+              <div class="mk-stream-header">
+                <span class="mk-stream-label">// KEYSTROKE STREAM (MIRRORED OUTPUT)</span>
+                <span class="mk-stream-mode">MIRROR TRANSLATION ACTIVE</span>
+              </div>
+              <div class="mk-stream-display">
+                <span class="mk-prompt">&gt;&nbsp;</span>
+                <span id="mk-stream-text" class="mk-stream-text"></span>
+                <span class="mk-cursor">_</span>
+              </div>
+              <div class="mk-stream-footer">
+                <span id="mk-stream-counter" class="mk-counter">LENGTH: 0 CHARS</span>
+                <div id="mk-stream-status" class="mk-counter" style="color: var(--cyan);">KEYSTROKE TRANSLATOR // READY</div>
+              </div>
+            </div>
+
+            <!-- On-screen Cyber Keyboard Frame -->
+            <div class="mk-keyboard-frame">
+              <div class="mk-keyboard-header">
+                <span>◈ MIRROR KEYBOARD // RECIPROCAL KEYSTROKE MATRIX</span>
+                <span style="color: var(--cyan); font-family: var(--font-tech);">INPUT TRANSLATOR ACTIVE</span>
+              </div>
+
+              <!-- Number Row: 1 2 3 4 5 6 7 8 9 0 -->
+              <div class="mk-keyboard-row">
+                <button type="button" class="mk-key" data-key="1">1</button>
+                <button type="button" class="mk-key" data-key="2">2</button>
+                <button type="button" class="mk-key" data-key="3">3</button>
+                <button type="button" class="mk-key" data-key="4">4</button>
+                <button type="button" class="mk-key" data-key="5">5</button>
+                <button type="button" class="mk-key" data-key="6">6</button>
+                <button type="button" class="mk-key" data-key="7">7</button>
+                <button type="button" class="mk-key" data-key="8">8</button>
+                <button type="button" class="mk-key" data-key="9">9</button>
+                <button type="button" class="mk-key" data-key="0">0</button>
+              </div>
+
+              <!-- QWERTY Row 1: Q W E R T Y U I O P -->
+              <div class="mk-keyboard-row">
+                <button type="button" class="mk-key" data-key="Q">Q</button>
+                <button type="button" class="mk-key" data-key="W">W</button>
+                <button type="button" class="mk-key" data-key="E">E</button>
+                <button type="button" class="mk-key" data-key="R">R</button>
+                <button type="button" class="mk-key" data-key="T">T</button>
+                <button type="button" class="mk-key" data-key="Y">Y</button>
+                <button type="button" class="mk-key" data-key="U">U</button>
+                <button type="button" class="mk-key" data-key="I">I</button>
+                <button type="button" class="mk-key" data-key="O">O</button>
+                <button type="button" class="mk-key" data-key="P">P</button>
+              </div>
+
+              <!-- QWERTY Row 2: A S D F G H J K L -->
+              <div class="mk-keyboard-row">
+                <button type="button" class="mk-key" data-key="A">A</button>
+                <button type="button" class="mk-key" data-key="S">S</button>
+                <button type="button" class="mk-key" data-key="D">D</button>
+                <button type="button" class="mk-key" data-key="F">F</button>
+                <button type="button" class="mk-key" data-key="G">G</button>
+                <button type="button" class="mk-key" data-key="H">H</button>
+                <button type="button" class="mk-key" data-key="J">J</button>
+                <button type="button" class="mk-key" data-key="K">K</button>
+                <button type="button" class="mk-key" data-key="L">L</button>
+              </div>
+
+              <!-- QWERTY Row 3: Z X C V B N M . , ! -->
+              <div class="mk-keyboard-row">
+                <button type="button" class="mk-key" data-key="Z">Z</button>
+                <button type="button" class="mk-key" data-key="X">X</button>
+                <button type="button" class="mk-key" data-key="C">C</button>
+                <button type="button" class="mk-key" data-key="V">V</button>
+                <button type="button" class="mk-key" data-key="B">B</button>
+                <button type="button" class="mk-key" data-key="N">N</button>
+                <button type="button" class="mk-key" data-key="M">M</button>
+                <button type="button" class="mk-key" data-key=".">.</button>
+                <button type="button" class="mk-key" data-key=",">,</button>
+                <button type="button" class="mk-key" data-key="!">!</button>
+              </div>
+
+              <!-- Keyboard control action buttons -->
+              <div class="mk-controls-row">
+                <button type="button" id="mk-btn-clear" class="mk-ctrl-btn mk-btn-clear">
+                  ✕ CLEAR
+                </button>
+                <button type="button" id="mk-btn-space" class="mk-ctrl-btn mk-btn-space">
+                  ␣ SPACE
+                </button>
+                <button type="button" id="mk-btn-backspace" class="mk-ctrl-btn mk-btn-backspace">
+                  ⌫ BACKSPACE
+                </button>
+                <button type="button" id="mk-btn-submit" class="mk-ctrl-btn mk-btn-submit" disabled title="Type sequence using mirror keyboard to enable submission">
+                  ⚡ SUBMIT SEQUENCE
+                </button>
+              </div>
+            </div>
+
+            <!-- Feedback / Result Banner -->
+            <div id="mk-answer-feedback" style="display: none; margin-bottom: 1.5rem;"></div>
+
+          </div>
+
+          <!-- =================================================================== -->
+          <!-- =================================================================== -->
+          <!-- WORKSPACE: HIDDEN VAULT                                             -->
+          <!-- 4-Stage Forensics / Logic Investigation Challenge                    -->
+          <!-- Flow: SYSTEM LOGS -> FIND UNKNOWN -> ACCESS CODE -> ASCII DECODE    -->
+          <!--       -> UNLOCK SECURE VAULT -> LOGO TRIGGER -> .hidden -> FLAG      -->
+          <!-- =================================================================== -->
+          <div id="workspace-hidden-vault" class="challenge-workspace" style="display: none;">
+            
+            <!-- STAGE 1: SYSTEM LOGS -->
+            <div id="hv-stage-1-card" class="hv-card">
+              <div class="hv-card-head">
+                <div class="hv-tag">◈ STAGE 1 // SYSTEM LOGS</div>
+                <h3 class="hv-title">SYSTEM SECURITY TELEMETRY</h3>
+                <p class="hv-desc">
+                  An intrusion signature was intercepted on the authentication gateway. Inspect the cyber-themed terminal system log below and identify the suspicious <code class="cyber-code">unknown</code> activity.
+                </p>
+              </div>
+
+              <!-- Terminal System Log Display -->
+              <div class="hv-terminal">
+                <div class="hv-terminal-bar">
+                  <div class="hv-terminal-dots">
+                    <span class="dot-red"></span>
+                    <span class="dot-yellow"></span>
+                    <span class="dot-green"></span>
+                  </div>
+                  <span class="hv-terminal-title">audit_daemon.log // NODE: SEC-09 // IDS: ACTIVE</span>
+                  <span class="hv-terminal-status"><span class="pulse-dot"></span> LIVE AUDIT</span>
+                </div>
+
+                <div id="hv-log-stream" class="hv-log-entries">
+                  <div class="hv-log-row" data-log-index="0" data-user="user_01" tabindex="0" role="button" aria-label="Log line: [09:14:02] user_01 LOGIN">
+                    <span class="hv-log-time">[09:14:02]</span>
+                    <span class="hv-log-user">user_01</span>
+                    <span class="hv-log-action">LOGIN</span>
+                  </div>
+                  <div class="hv-log-row" data-log-index="1" data-user="user_02" tabindex="0" role="button" aria-label="Log line: [09:14:08] user_02 LOGIN">
+                    <span class="hv-log-time">[09:14:08]</span>
+                    <span class="hv-log-user">user_02</span>
+                    <span class="hv-log-action">LOGIN</span>
+                  </div>
+                  <div class="hv-log-row" data-log-index="2" data-user="admin" tabindex="0" role="button" aria-label="Log line: [09:14:15] admin LOGIN">
+                    <span class="hv-log-time">[09:14:15]</span>
+                    <span class="hv-log-user">admin</span>
+                    <span class="hv-log-action">LOGIN</span>
+                  </div>
+                  <div class="hv-log-row" data-log-index="3" data-user="unknown" tabindex="0" role="button" aria-label="Log line: [09:14:21] unknown LOGIN">
+                    <span class="hv-log-time">[09:14:21]</span>
+                    <span class="hv-log-user hv-user-unknown">unknown</span>
+                    <span class="hv-log-action">LOGIN</span>
+                  </div>
+                  <div class="hv-log-row hv-log-suspicious-row" data-log-index="4" data-user="unknown" data-target="vault.dat" tabindex="0" role="button" aria-label="Log line: [09:14:24] unknown ACCESS vault.dat">
+                    <span class="hv-log-time">[09:14:24]</span>
+                    <span class="hv-log-user hv-user-unknown">unknown</span>
+                    <span class="hv-log-action">ACCESS <strong class="hv-log-file">vault.dat</strong></span>
+                  </div>
+                  <div class="hv-log-row" data-log-index="5" data-user="unknown" tabindex="0" role="button" aria-label="Log line: [09:14:27] unknown DOWNLOAD vault">
+                    <span class="hv-log-time">[09:14:27]</span>
+                    <span class="hv-log-user hv-user-unknown">unknown</span>
+                    <span class="hv-log-action">DOWNLOAD vault</span>
+                  </div>
+                  <div class="hv-log-row" data-log-index="6" data-user="unknown" tabindex="0" role="button" aria-label="Log line: [09:14:31] unknown LOGOUT">
+                    <span class="hv-log-time">[09:14:31]</span>
+                    <span class="hv-log-user hv-user-unknown">unknown</span>
+                    <span class="hv-log-action">LOGOUT</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Stage 1 Feedback -->
+              <div id="hv-stage1-feedback" class="hv-feedback-box" style="display: none;"></div>
+
+              <!-- Stage 1 Outcome / Telemetry Breach Reveal -->
+              <div id="hv-stage1-reveal" class="hv-reveal-card" style="display: none;">
+                <div class="hv-reveal-header">
+                  <span class="hv-alert-icon">⚠</span>
+                  <div>
+                    <h4 class="hv-reveal-title">SUSPICIOUS ACTIVITY IDENTIFIED</h4>
+                    <p class="hv-reveal-sub">Intrusion trace confirmed on target file.</p>
+                  </div>
+                </div>
+                <div class="hv-reveal-grid">
+                  <div class="hv-reveal-field">
+                    <span class="hv-reveal-label">Last accessed file:</span>
+                    <span class="hv-reveal-value cyber-code">vault.dat</span>
+                  </div>
+                  <div class="hv-reveal-field">
+                    <span class="hv-reveal-label">Access Code:</span>
+                    <span id="hv-reveal-access-code" class="hv-reveal-value hv-access-code">56 41 55 4C 54</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAGE 2: ASCII -->
+            <div id="hv-stage-2-card" class="hv-card" style="display: none;">
+              <div class="hv-card-head">
+                <div class="hv-tag">◈ STAGE 2 // ASCII HEX</div>
+                <h3 class="hv-title">ACCESS CREDENTIAL DECODER</h3>
+              </div>
+
+              <!-- Hint Display -->
+              <div class="hv-hint-quote-box">
+                <span class="hv-hint-icon">💡</span>
+                <blockquote class="hv-hint-quote">“The machine speaks in hexadecimals.”</blockquote>
+              </div>
+
+              <!-- Access Code Chip Display -->
+              <div class="hv-ascii-chips-wrap">
+                <span class="hv-chips-label">DECODE ACCESS CODE HEX BYTES:</span>
+                <div id="hv-ascii-chips-container" class="hv-chips-row">
+                  <div class="hv-chip"><span class="chip-idx">BYTE 1</span><span class="chip-val">56</span></div>
+                  <div class="hv-chip"><span class="chip-idx">BYTE 2</span><span class="chip-val">41</span></div>
+                  <div class="hv-chip"><span class="chip-idx">BYTE 3</span><span class="chip-val">55</span></div>
+                  <div class="hv-chip"><span class="chip-idx">BYTE 4</span><span class="chip-val">4C</span></div>
+                  <div class="hv-chip"><span class="chip-idx">BYTE 5</span><span class="chip-val">54</span></div>
+                </div>
+                <p class="hv-chips-instruction">
+                  Translate the intercepted hexadecimal byte stream using the ASCII table to deduce the vault keyword.
+                </p>
+              </div>
+
+              <!-- ASCII Reference Table (Extracted & Embedded from https://www.ascii-code.com/) -->
+              <div class="ascii-ref-table-box hv-ascii-portal-box" style="margin-top: 1.25rem; max-height: 480px; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 243, 255, 0.3); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-family: var(--font-cyber); font-size: 0.92rem; color: var(--cyan); letter-spacing: 1.5px;">
+                      ASCII TABLE // ASCII-CODE.COM
+                    </span>
+                    <span class="cyber-badge badge-cyan" style="font-size: 0.65rem;">0–255 EXTENDED</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <div class="btn-group" role="group" style="display: inline-flex; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 4px; overflow: hidden;">
+                      <button type="button" id="hv-ascii-tab-table" class="hv-ascii-tab-btn active" style="background: rgba(0, 243, 255, 0.2); color: var(--cyan); border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; font-family: var(--font-tech); cursor: pointer;">TABLE VIEW</button>
+                      <button type="button" id="hv-ascii-tab-live" class="hv-ascii-tab-btn" style="background: transparent; color: var(--text-muted); border: none; padding: 0.25rem 0.65rem; font-size: 0.72rem; font-family: var(--font-tech); cursor: pointer;">LIVE WEB VIEW</button>
+                    </div>
+                    <a href="https://www.ascii-code.com/" target="_blank" rel="noopener noreferrer" class="btn-cyber btn-cyber-outline" style="padding: 0.22rem 0.6rem; font-size: 0.72rem; letter-spacing: 0.5px; text-decoration: none;" title="Open https://www.ascii-code.com in new window">
+                      🌐 ascii-code.com ↗
+                    </a>
+                  </div>
+                </div>
+
+                <!-- TABLE VIEW PANEL -->
+                <div id="hv-ascii-panel-table" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                  <!-- Range Filter Tabs -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                    <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--cyan); letter-spacing: 1px;">◈ CHARACTER RANGE:</span>
+                    <div class="hv-ascii-filter-ranges" style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
+                      <button type="button" class="hv-range-btn active" data-range="all">ALL (0–255)</button>
+                      <button type="button" class="hv-range-btn" data-range="control">0–31 (CTRL)</button>
+                      <button type="button" class="hv-range-btn" data-range="printable">32–127 (STD)</button>
+                      <button type="button" class="hv-range-btn" data-range="extended">128–255 (EXT)</button>
+                    </div>
+                  </div>
+
+                  <div class="ascii-table-scroll" style="overflow-x: auto; overflow-y: auto; flex: 1; max-height: 340px;">
+                    <table class="ascii-table-table" style="min-width: 620px; font-size: 0.8rem;">
+                      <thead>
+                        <tr>
+                          <th style="width: 55px; color: var(--green);">HEX</th>
+                          <th style="width: 50px;">DEC</th>
+                          <th style="width: 50px;">OCT</th>
+                          <th style="width: 85px;">BIN</th>
+                          <th style="width: 70px;">SYMBOL</th>
+                          <th style="width: 75px;">HTML</th>
+                          <th style="text-align: left; padding-left: 0.75rem;">DESCRIPTION</th>
+                        </tr>
+                      </thead>
+                      <tbody id="hv-ascii-table-tbody">
+                        <!-- Populated with complete ascii-code.com data (0-255) with HEX as primary -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- LIVE WEB VIEW PANEL (Embedded iframe for https://www.ascii-code.com/) -->
+                <div id="hv-ascii-panel-live" style="display: none; flex: 1; min-height: 380px; margin-top: 0.5rem; position: relative;">
+                  <iframe id="hv-ascii-live-iframe" data-src="https://www.ascii-code.com/" src="about:blank" style="width: 100%; height: 380px; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: var(--radius-sm); background: #ffffff;" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAGE 3: SECURE VAULT -->
+            <div id="hv-stage-3-card" class="hv-card" style="display: none;">
+              <div class="hv-vault-perimeter-banner">
+                <div class="hv-vault-perimeter-title">SECURE VAULT</div>
+                <div id="hv-vault-lock-status" class="hv-vault-status-badge status-locked">
+                  <span class="hv-lock-icon">🔒</span>
+                  <span id="hv-lock-text">LOCKED</span>
+                </div>
+              </div>
+
+              <!-- Unlock Form -->
+              <form id="hv-vault-unlock-form" class="hv-unlock-form" autocomplete="off">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                  <label class="form-label" for="hv-vault-keyword-input" style="color: var(--cyan); font-weight: 700; letter-spacing: 2px;">
+                    Enter vault keyword: __________
+                  </label>
+                  <div class="hv-unlock-input-row">
+                    <input type="text" id="hv-vault-keyword-input" class="form-control hv-keyword-input" placeholder="Enter vault keyword" required autocomplete="off">
+                    <button type="submit" id="hv-btn-unlock" class="btn-cyber btn-cyber-primary" style="padding: 0.85rem 2.2rem; font-weight: 700; letter-spacing: 2px;">
+                      UNLOCK
+                    </button>
+                  </div>
+                </div>
+              </form>
+
+              <!-- Stage 3 Feedback -->
+              <div id="hv-stage3-feedback" class="submission-feedback" style="display: none; margin-top: 1rem;"></div>
+            </div>
+
+            <!-- STAGE 4: HIDDEN FILE -->
+            <div id="hv-stage-4-card" class="hv-card hv-vault-storage-card" style="display: none;">
+              
+              <!-- Vault Header with Natural Event Logo -->
+              <div class="hv-vault-panel-header">
+                <div class="hv-vault-panel-left">
+                  <div class="hv-vault-panel-title">
+                    <span class="hv-folder-sym">📁</span>
+                    <span>SECURE VAULT // REPOSITORY</span>
+                  </div>
+                  <div class="hv-vault-status-unlocked">
+                    <span class="pulse-dot-green"></span>
+                    <span>STORAGE NODE ONLINE // UNLOCKED</span>
+                  </div>
+                  <!-- All files are not visible -->
+                  <div class="hv-vault-status-comment" id="hv-vault-comment-hint" onclick="window.revealHvHiddenFile()" style="cursor: pointer;" title="Click to inspect cloaked directory partition">
+                    <span class="hv-comment-syntax">//</span>
+                    <span>All files are not visible</span>
+                    <span class="cyber-badge badge-cyan" style="font-size: 0.65rem; margin-left: 0.5rem; cursor: pointer;">⚡ REVEAL evidence.txt</span>
+                  </div>
+                </div>
+
+                <!-- Natural Event Logo (Blends naturally, NO button border, looks like authentic event branding) -->
+                <div class="hv-vault-panel-right">
+                  <div id="hv-event-logo" class="hv-event-logo-wrap" role="button" tabindex="0" onclick="window.revealHvHiddenFile()" aria-label="CYBERTRIX Event Logo" title="CYBERTRIX — Click to toggle stealth relay" style="cursor: pointer;">
+                    <img id="hv-event-logo-img" src="assets/logo/logo.svg" alt="CYBERTRIX" class="hv-natural-event-logo">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Files Grid: Displays readme.txt, system.log, notes.txt (and evidence.txt once discovered) -->
+              <div class="hv-storage-content">
+                <div class="hv-storage-dir-header">
+                  <span class="hv-dir-icon">📂</span>
+                  <span class="hv-dir-name">/vault/</span>
+                  <span id="hv-files-count" class="hv-files-count">(3 FILES)</span>
+                </div>
+
+                <div id="hv-files-grid" class="hv-files-grid">
+                  <!-- Rendered via challenges.js: Fake files, notes.txt, and evidence.txt upon discovery -->
+                </div>
+
+                <!-- =================================================================== -->
+                <!-- FILE MESSAGE & CONTENT VIEWER (LOCATED DIRECTLY BELOW ALL FILES)    -->
+                <!-- =================================================================== -->
+                <div id="hv-file-viewer-modal" class="hv-inline-file-viewer" style="display: none;">
+                  <div class="hv-file-viewer-box cyber-card-corner">
+                    
+                    <div class="hv-file-header">
+                      <div class="hv-file-title-wrap">
+                        <div class="hv-file-status-pill">
+                          <span class="status-indicator-dot"></span>
+                          <span id="hv-modal-status-pill">FILE INSPECTOR</span>
+                        </div>
+                        <div id="hv-modal-filename" class="hv-file-path">/vault/readme.txt</div>
+                      </div>
+
+                      <!-- Quick File Tabs Bar to switch between all vault files -->
+                      <div id="hv-viewer-file-tabs" class="hv-file-tabs-bar"></div>
+
+                      <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                        <button type="button" id="hv-btn-view-all-toggle" class="btn-cyber btn-cyber-xs" onclick="window.toggleHvViewAllFiles()" title="Toggle viewing all vault files at once">
+                          ☷ VIEW ALL FILES
+                        </button>
+                        <button type="button" class="btn-cyber btn-cyber-sm" onclick="window.closeHvFileModal()" title="Hide message viewer">
+                          ✕ HIDE
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Single File Content Body -->
+                    <div id="hv-single-file-container" class="hv-file-body">
+                      <pre id="hv-modal-content" class="hv-file-pre"></pre>
+                    </div>
+
+                    <!-- All Files Stacked View Container (Active when View All is toggled) -->
+                    <div id="hv-all-files-container" style="display: none; flex-direction: column; gap: 1rem; margin-bottom: 1.25rem;"></div>
+
+                    <div class="hv-file-footer">
+                      <div class="hv-file-footer-left">
+                        <span id="hv-modal-footer-msg" style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-code);">
+                          SEC-09 FILE VIEWER // LOCAL DECRYPT
+                        </span>
+                      </div>
+                      <div id="hv-modal-flag-actions" style="display: none; gap: 0.75rem; flex-wrap: wrap;">
+                        <button type="button" id="hv-modal-copy-btn" class="btn-cyber btn-cyber-green" onclick="window.copyHvFlag()">
+                          📋 COPY FLAG
+                        </button>
+                        <button type="button" id="hv-modal-autofill-btn" class="btn-cyber btn-cyber-primary" onclick="window.submitHvFlagAuto()" style="font-size: 0.78rem; font-weight: 700;">
+                          ⚡ AUTO-FILL TO SUBMISSION
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- =================================================================== -->
+          <!-- WORKSPACE: ASCII HUNT (Requirements 13, 14, 15, 16)                 -->
+          <!-- =================================================================== -->
+          <div id="workspace-ascii-hunt" class="challenge-workspace" style="display: none;">
+            
+            <!-- ASCII Sub-Tasks Progression Card (Requirements 2, 3, 4) -->
+            <div id="ascii-subtasks-card" class="subtasks-matrix-card" style="margin-bottom: 1.5rem;">
+              <div class="subtasks-header-row">
+                <div class="subtasks-headline-wrap">
+                  <div class="subtasks-top-label">ASCII</div>
+                  <div class="subtasks-divider-line">────────────────────</div>
+                </div>
+                <div class="subtasks-progress-badge">
+                  <span class="subtasks-prog-label">Progress:</span>
+                  <span id="ascii-subtasks-progress-val" class="subtasks-prog-val">1 / 2</span>
+                </div>
+              </div>
+
+              <!-- List of Sub-Tasks (Dynamically populated) -->
+              <div id="ascii-subtasks-list" class="subtasks-items-list"></div>
+
+              <!-- Current Active Sub-task Banner -->
+              <div id="ascii-current-subtask-banner" class="subtask-current-focus-bar">
+                <span class="pulse-dot-green"></span>
+                <span id="ascii-current-subtask-text">[ CURRENT SUB-TASK: Sub-task 1 — 200 pts ]</span>
+              </div>
+
+              <!-- Completed Challenge Banner -->
+              <div id="ascii-subtasks-complete-banner" class="subtasks-complete-banner" style="display: none;">
+                <div class="complete-headline">CHALLENGE COMPLETED ✓</div>
+                <div class="complete-sub">+400 POINTS</div>
+              </div>
+            </div>
+
+            <div class="ascii-layout-grid layout-full-width">
+              <!-- Interactive ASCII Challenge Card (Structured like Hidden Vault Stage 2) -->
+              <div class="checker-code-card" style="border-color: rgba(0, 255, 157, 0.35); box-shadow: 0 0 35px rgba(0, 255, 157, 0.12); margin-bottom: 0; width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 255, 157, 0.25); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+                  <span id="ascii-workspace-title" style="font-family: var(--font-tech); font-size: 0.95rem; color: var(--green); letter-spacing: 2px; font-weight: 700;">
+                    ◈ ASCII VALUE FINDING // HEXADECIMAL DECODER
+                  </span>
+                  <span id="ascii-workspace-badge" class="cyber-badge badge-green">HEX → CHAR MISSION</span>
+                </div>
+
+                <p id="ascii-workspace-desc" style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem;">
+                  An intercepted telemetry node emitted a sequence of hexadecimal values representing a complete target string. Decode the hexadecimal values into their plaintext character representation.
+                </p>
+
+                <!-- Hexadecimal Word Sequence Display -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span style="font-family: var(--font-tech); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1.5px;">
+                    // INTERCEPTED HEXADECIMAL WORD SEQUENCE
+                  </span>
+                  <span id="ascii-target-chars-count" style="font-family: var(--font-code); font-size: 0.75rem; color: var(--cyan);"></span>
+                </div>
+                <div id="ascii-stream-container" class="ascii-hex-word-stream" style="margin-bottom: 1.25rem;">
+                  <!-- Injected via challenges.js as hexadecimal chips for the complete word -->
+                </div>
+
+                <!-- ASCII Reference Table (Extracted & Embedded from https://www.ascii-code.com/ - Integrated Like Hidden Vault) -->
+                <div id="ascii-hunt-portal" class="ascii-ref-table-box ascii-hunt-portal-box" style="margin-top: 1.25rem; margin-bottom: 1.5rem; display: flex; flex-direction: column;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(0, 255, 157, 0.35); padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                      <span style="font-family: var(--font-cyber); font-size: 1.05rem; color: var(--green); letter-spacing: 2px; font-weight: 800;">
+                        ASCII TABLE (0–127) // ASCII-CODE.COM
+                      </span>
+                      <span class="cyber-badge badge-green" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">0–255 EXTENDED</span>
+                      <span id="ascii-visible-count" class="cyber-badge badge-cyan" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">256 ROWS</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                      <!-- Zoom Controls -->
+                      <div style="display: inline-flex; align-items: center; gap: 0.25rem; background: rgba(0, 255, 157, 0.08); border: 1px solid rgba(0, 255, 157, 0.3); border-radius: var(--radius-sm); padding: 0.2rem 0.5rem;">
+                        <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-tech); margin-right: 0.2rem;">FONT SIZE:</span>
+                        <button type="button" id="btn-ascii-zoom-out" class="btn-cyber btn-cyber-sm" style="padding: 0.15rem 0.5rem; font-size: 0.75rem; min-width: 28px;" title="Smaller Font">A-</button>
+                        <span id="ascii-zoom-level" style="font-family: var(--font-code); font-size: 0.76rem; color: var(--green); min-width: 44px; text-align: center; font-weight: 700;">100%</span>
+                        <button type="button" id="btn-ascii-zoom-in" class="btn-cyber btn-cyber-sm" style="padding: 0.15rem 0.5rem; font-size: 0.75rem; min-width: 28px;" title="Larger Font">A+</button>
+                      </div>
+
+                      <!-- Expand Height Button -->
+                      <button type="button" id="btn-ascii-expand-height" class="btn-cyber btn-cyber-sm" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-color: rgba(0, 255, 157, 0.45); color: var(--green); cursor: pointer;" title="Toggle Expanded Table Height">
+                        [ ⛶ EXPAND ]
+                      </button>
+
+                      <!-- Table vs Live View Tabs -->
+                      <div style="display: inline-flex; border: 1px solid rgba(0, 255, 157, 0.4); border-radius: var(--radius-sm); overflow: hidden;">
+                        <button type="button" id="ascii-tab-table" class="ascii-hunt-tab-btn active" style="background: rgba(0, 255, 157, 0.2); color: var(--green); border: none; padding: 0.3rem 0.85rem; font-size: 0.78rem; font-family: var(--font-tech); cursor: pointer;">TABLE VIEW</button>
+                        <button type="button" id="ascii-tab-live" class="ascii-hunt-tab-btn" style="background: transparent; color: var(--text-muted); border: none; padding: 0.3rem 0.85rem; font-size: 0.78rem; font-family: var(--font-tech); cursor: pointer;">LIVE WEB VIEW</button>
+                      </div>
+                      <a href="https://www.ascii-code.com/" target="_blank" rel="noopener noreferrer" class="btn-cyber btn-cyber-sm" style="font-size: 0.72rem; padding: 0.25rem 0.65rem; text-decoration: none; border-color: rgba(0, 255, 157, 0.4); color: var(--green);" title="Open in new window">
+                        ascii-code.com ↗
+                      </a>
+                    </div>
+                  </div>
+
+                  <!-- TABLE VIEW PANEL -->
+                  <div id="ascii-panel-table" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                    <div style="display: flex; gap: 0.75rem; margin-top: 0.85rem; margin-bottom: 0.85rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                      <span style="font-family: var(--font-code); font-size: 0.8rem; color: var(--green); letter-spacing: 1px;">◈ CHARACTER RANGE:</span>
+                      <div class="ascii-hunt-filter-ranges" style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                        <button type="button" class="ascii-range-btn ascii-hunt-range-btn active" data-range="all">ALL (0–255)</button>
+                        <button type="button" class="ascii-range-btn ascii-hunt-range-btn" data-range="control">0–31 (CTRL)</button>
+                        <button type="button" class="ascii-range-btn ascii-hunt-range-btn" data-range="printable">32–127 (STD)</button>
+                        <button type="button" class="ascii-range-btn ascii-hunt-range-btn" data-range="extended">128–255 (EXT)</button>
+                      </div>
+                    </div>
+
+                    <div class="ascii-table-scroll" style="overflow-x: auto; overflow-y: auto; flex: 1; max-height: 420px;">
+                      <table id="ascii-main-table" class="ascii-table-large">
+                        <thead>
+                          <tr>
+                            <th style="width: 80px; color: var(--green);">HEX<!-- <th>Hex</th> --></th>
+                            <th style="width: 75px; color: var(--cyan);">DEC<!-- <th>Dec</th> --></th>
+                            <th style="width: 75px;">OCT</th>
+                            <th style="width: 110px;">BIN</th>
+                            <th style="width: 95px;">SYMBOL<!-- <th>Char / Symbol</th> --></th>
+                            <th style="width: 85px;">HTML</th>
+                            <th style="text-align: left; padding-left: 1rem;">DESCRIPTION</th>
+                          </tr>
+                        </thead>
+                        <tbody id="ascii-table-tbody">
+                          <!-- Populated via challenges.js with 0-255 ascii-code.com data -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- LIVE WEB VIEW PANEL (Embedded iframe for https://www.ascii-code.com/) -->
+                  <div id="ascii-panel-live" style="display: none; flex: 1; min-height: 500px; margin-top: 0.75rem; position: relative;">
+                    <iframe id="ascii-live-iframe" data-src="https://www.ascii-code.com/" src="about:blank" style="width: 100%; height: 500px; border: 1px solid rgba(0, 255, 157, 0.35); border-radius: var(--radius-sm); background: #ffffff;" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+                  </div>
+                </div>
+
+                <!-- Form to Submit Decoded Value -->
+                <form id="ascii-answer-form">
+                  <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" for="ascii-answer-input" style="color: var(--green); font-family: var(--font-tech); font-weight: 700; letter-spacing: 1.5px;">DECODED TARGET STRING / WORD</label>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                      <input type="text" id="ascii-answer-input" class="form-control" placeholder="Enter decoded target word (e.g. CYBER!)" required autocomplete="off" style="font-family: var(--font-code); font-size: 1.05rem; letter-spacing: 2px; flex: 1; min-width: 260px;">
+                      <button type="submit" id="ascii-submit-btn" class="btn-cyber btn-cyber-primary" style="padding: 0.85rem 2rem; white-space: nowrap;">
+                        ⚡ SUBMIT DECODED VALUE
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <!-- Decoded Value Verification Feedback -->
+                <div id="ascii-answer-feedback" class="submission-feedback" style="display: none; margin-top: 1rem;"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- =================================================================== -->
+          <!-- WORKSPACE: METADATA GHOST                                           -->
+          <!-- =================================================================== -->
+          <div id="workspace-metadata-ghost" class="challenge-workspace" style="display: none;">
+            
+            <!-- Main Ghost Arena Card -->
+            <div class="checker-code-card" style="border-color: rgba(0, 243, 255, 0.35); box-shadow: 0 0 35px rgba(0, 243, 255, 0.12); margin-top: 1rem; margin-bottom: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 0.85rem; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                <div>
+                  <h2 style="font-family: var(--font-cyber); font-size: 1.45rem; color: #ffffff; letter-spacing: 2px; margin: 0 0 0.4rem 0;">
+                    Metadata Ghost
+                  </h2>
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span class="cyber-badge badge-purple">FORENSICS</span>
+                    <span class="cyber-badge badge-red">HARD</span>
+                    <span class="cyber-badge badge-green">300 POINTS</span>
+                  </div>
+                </div>
+                <div id="ghost-solved-indicator" style="display: none;">
+                  <span class="cyber-badge badge-green badge-pulse">✓ SOLVED (+300 PTS)</span>
+                </div>
+              </div>
+
+              <!-- Challenge Description -->
+              <p style="font-size: 0.98rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 1.5rem; background: rgba(0, 243, 255, 0.04); padding: 0.85rem 1.15rem; border-left: 3px solid var(--cyan); border-radius: var(--radius-sm);">
+                An intercepted surveillance photo shows a detective's desk, encrypted blueprint text 'PHHW DW PLGQLJKW', and tactical notes. Decipher the surveillance clues to recover the secret message.
+              </p>
+
+              <!-- Image Display Frame -->
+              <div class="ghost-image-frame">
+                <div class="ghost-image-inner">
+                  <img id="ghost-challenge-img" src="assets/metadata-ghost-01.png" alt="Metadata Ghost Challenge Target" class="ghost-target-image">
+                </div>
+                <div class="ghost-image-toolbar">
+                  <a id="btn-ghost-download" href="assets/metadata-ghost-01.png" download="metadata-ghost-01.png" class="btn-cyber btn-cyber-primary btn-cyber-sm" style="text-decoration: none;">
+                    ⤓ DOWNLOAD IMAGE
+                  </a>
+                  <button type="button" id="btn-ghost-quick-inspect" class="btn-cyber btn-cyber-sm" onclick="window.ghostAnalyzeCurrentImage()">
+                    ⚡ ANALYZE IN INSPECTOR
+                  </button>
+                  <button type="button" id="btn-ghost-contrast" class="btn-cyber btn-cyber-sm" onclick="window.toggleGhostContrast()">
+                    ⚙ CONTRAST BOOST
+                  </button>
+                  <button type="button" id="btn-ghost-zoom" class="btn-cyber btn-cyber-sm" onclick="window.toggleGhostZoom()">
+                    🔍 ZOOM IN/OUT
+                  </button>
+                </div>
+              </div>
+
+              <!-- =================================================================== -->
+              <!-- BUILT-IN OFFLINE FORENSIC TOOLS (AIR-GAPPED / NO EXTERNAL INTERNET)   -->
+              <!-- =================================================================== -->
+              <div class="ghost-tools-wrapper">
+                <div class="ghost-tools-header">
+                  <div>
+                    <span style="font-family: var(--font-cyber); font-size: 0.95rem; color: var(--cyan); letter-spacing: 1.5px; font-weight: 700;">
+                      ◈ BUILT-IN OFFLINE FORENSIC TOOLS
+                    </span>
+                    <span class="cyber-badge badge-cyan" style="font-size: 0.65rem; margin-left: 0.5rem;">AIR-GAPPED SUITE</span>
+                  </div>
+                  <small style="color: var(--text-muted); font-size: 0.72rem; font-family: var(--font-code);">
+                    100% LOCAL JAVASCRIPT — ZERO INTERNET REQUIRED
+                  </small>
+                </div>
+
+                <!-- Tool Tabs Navigation -->
+                <div class="ghost-tool-tabs-bar">
+                  <button type="button" id="ghost-tab-btn-meta" class="ghost-tool-tab-btn active" onclick="window.switchGhostTool('meta')">
+                    ◈ 1. METADATA INSPECTOR
+                  </button>
+                  <button type="button" id="ghost-tab-btn-b64" class="ghost-tool-tab-btn" onclick="window.switchGhostTool('b64')">
+                    ◈ 2. BASE64 DECODER
+                  </button>
+                  <button type="button" id="ghost-tab-btn-hex" class="ghost-tool-tab-btn" onclick="window.switchGhostTool('hex')">
+                    ◈ 3. HEX DECODER
+                  </button>
+                  <button type="button" id="ghost-tab-btn-rot13" class="ghost-tool-tab-btn" onclick="window.switchGhostTool('rot13')">
+                    ◈ 4. CAESAR / ROT DECODER
+                  </button>
+                </div>
+
+                <!-- Tool 1: Metadata Inspector -->
+                <div id="ghost-tool-pane-meta" class="ghost-tool-pane active">
+                  <div style="margin-bottom: 1rem;">
+                    <h4 style="font-family: var(--font-tech); font-size: 0.92rem; color: var(--cyan); letter-spacing: 1px; margin-bottom: 0.35rem;">
+                      TOOL 1 — OFFLINE METADATA INSPECTOR
+                    </h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                      Inspect file headers, properties, and embedded metadata chunks completely offline without uploading to any external server.
+                    </p>
+                  </div>
+
+                  <div id="ghost-dropzone" class="ghost-dropzone" onclick="document.getElementById('ghost-file-input').click()">
+                    <input type="file" id="ghost-file-input" accept="image/*" style="display: none;" onchange="window.handleGhostFileSelect(event)">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.4rem;">📁</div>
+                    <div style="color: #ffffff; font-family: var(--font-tech); font-size: 0.9rem; letter-spacing: 1px;">
+                      CLICK TO SELECT / DRAG & DROP CHALLENGE IMAGE
+                    </div>
+                    <div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem;">
+                      PNG format supported with local chunk header extraction
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+                    <button type="button" class="btn-cyber btn-cyber-primary btn-cyber-sm" onclick="window.ghostAnalyzeCurrentImage()">
+                      ⚡ ANALYZE TARGET IMAGE DIRECTLY
+                    </button>
+                    <button type="button" class="btn-cyber btn-cyber-sm" onclick="document.getElementById('ghost-file-input').click()">
+                      📂 BROWSE LOCAL FILE
+                    </button>
+                    <button type="button" id="btn-clear-meta" class="btn-cyber btn-cyber-sm" onclick="window.clearGhostMetadataInspector()" style="display: none;">
+                      ✕ RESET
+                    </button>
+                  </div>
+
+                  <!-- Metadata Inspection Results Display -->
+                  <div id="ghost-meta-results" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+                      <span style="font-family: var(--font-tech); font-size: 0.82rem; color: var(--cyan); letter-spacing: 1px;">
+                        EXTRACTION TELEMETRY:
+                      </span>
+                      <span id="ghost-meta-status-pill" class="cyber-badge badge-green" style="font-size: 0.65rem;">
+                        METADATA EXTRACTED
+                      </span>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                      <table class="ghost-meta-table">
+                        <tbody>
+                          <tr>
+                            <th>Filename</th>
+                            <td id="meta-val-filename">metadata-ghost-01.png</td>
+                          </tr>
+                          <tr>
+                            <th>File type</th>
+                            <td id="meta-val-filetype">image/png</td>
+                          </tr>
+                          <tr>
+                            <th>File size</th>
+                            <td id="meta-val-filesize">1.34 MB (1,400,874 bytes)</td>
+                          </tr>
+                          <tr>
+                            <th>Author</th>
+                            <td id="meta-val-author">OPERATIVE_SPECTER // SURVEILLANCE UNIT 03</td>
+                          </tr>
+                          <tr>
+                            <th>Description</th>
+                            <td id="meta-val-desc">Surveillance desk reconnaissance. Intercepted map with encrypted coordinates. Device: Canon EOS R5.</td>
+                          </tr>
+                          <tr>
+                            <th>Custom metadata</th>
+                            <td id="meta-val-custom">Timestamp: 2026-10-01 22:47:32 // CAM-03 Alleyway // FPS: 60</td>
+                          </tr>
+                          <tr class="highlight-ghost">
+                            <th style="color: var(--green);">X-Ghost</th>
+                            <td>
+                              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                                <span id="meta-val-xghost" style="font-family: var(--font-code); font-weight: 700; color: var(--green); font-size: 1rem; letter-spacing: 1px;">
+                                  NTA0ODQ4NTcyMDQ0NTcyMDUwNEM0NzUxNEM0QTRCNTc=
+                                </span>
+                                <div>
+                                  <button type="button" id="btn-copy-meta-xghost" class="btn-cyber btn-cyber-xs" onclick="window.copyGhostText(document.getElementById('meta-val-xghost').textContent.trim(), this)">
+                                    📋 COPY
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tool 2: Base64 Decoder -->
+                <div id="ghost-tool-pane-b64" class="ghost-tool-pane">
+                  <div style="margin-bottom: 1rem;">
+                    <h4 style="font-family: var(--font-tech); font-size: 0.92rem; color: var(--cyan); letter-spacing: 1px; margin-bottom: 0.35rem;">
+                      TOOL 2 — OFFLINE BASE64 DECODER
+                    </h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                      Decodes Base64 encoded payload entirely inside your browser using offline JavaScript.
+                    </p>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" for="ghost-b64-input" style="color: var(--cyan);">BASE64 ENCODED INPUT:</label>
+                    <textarea id="ghost-b64-input" class="form-control" rows="3" placeholder="Paste Base64 encoded text here..." style="font-family: var(--font-code); font-size: 0.92rem;"></textarea>
+                  </div>
+
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    <button type="button" id="btn-ghost-b64-decode" class="btn-cyber btn-cyber-primary btn-cyber-sm" onclick="window.runGhostB64Decode()">
+                      [ 🔓 DECODE BASE64 ]
+                    </button>
+                    <button type="button" id="btn-ghost-b64-clear" class="btn-cyber btn-cyber-sm" onclick="window.clearGhostB64()">
+                      [ ✕ CLEAR ]
+                    </button>
+                  </div>
+
+                  <label class="form-label" style="color: var(--cyan);">DECODED BASE64 OUTPUT:</label>
+                  <div class="ghost-output-terminal">
+                    <span id="ghost-b64-output" style="color: var(--green); font-weight: 600;">(Awaiting input)</span>
+                    <div id="ghost-b64-actions" style="display: none;">
+                      <button type="button" id="btn-copy-ghost-b64" class="btn-cyber btn-cyber-xs" onclick="window.copyGhostText(document.getElementById('ghost-b64-output').textContent.trim(), this)">
+                        📋 COPY
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tool 3: Hex Decoder -->
+                <div id="ghost-tool-pane-hex" class="ghost-tool-pane">
+                  <div style="margin-bottom: 1rem;">
+                    <h4 style="font-family: var(--font-tech); font-size: 0.92rem; color: var(--cyan); letter-spacing: 1px; margin-bottom: 0.35rem;">
+                      TOOL 3 — OFFLINE HEXADECIMAL DECODER
+                    </h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                      Decodes hexadecimal byte sequence into readable characters completely offline.
+                    </p>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" for="ghost-hex-input" style="color: var(--cyan);">HEXADECIMAL INPUT (HEX BYTES):</label>
+                    <textarea id="ghost-hex-input" class="form-control" rows="3" placeholder="Enter hex string (e.g. 43554E4147425A or with spaces)..." style="font-family: var(--font-code); font-size: 0.92rem;"></textarea>
+                  </div>
+
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    <button type="button" id="btn-ghost-hex-decode" class="btn-cyber btn-cyber-primary btn-cyber-sm" onclick="window.runGhostHexDecode()">
+                      [ 🔓 DECODE HEX ]
+                    </button>
+                    <button type="button" id="btn-ghost-hex-clear" class="btn-cyber btn-cyber-sm" onclick="window.clearGhostHex()">
+                      [ ✕ CLEAR ]
+                    </button>
+                  </div>
+
+                  <label class="form-label" style="color: var(--cyan);">DECODED HEX OUTPUT:</label>
+                  <div class="ghost-output-terminal">
+                    <span id="ghost-hex-output" style="color: var(--green); font-weight: 600;">(Awaiting input)</span>
+                    <div id="ghost-hex-actions" style="display: none;">
+                      <button type="button" id="btn-copy-ghost-hex" class="btn-cyber btn-cyber-xs" onclick="window.copyGhostText(document.getElementById('ghost-hex-output').textContent.trim(), this)">
+                        📋 COPY
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tool 4: Caesar / ROT Decoder -->
+                <div id="ghost-tool-pane-rot13" class="ghost-tool-pane">
+                  <div style="margin-bottom: 1rem;">
+                    <h4 style="font-family: var(--font-tech); font-size: 0.92rem; color: var(--cyan); letter-spacing: 1px; margin-bottom: 0.35rem;">
+                      TOOL 4 — OFFLINE CAESAR &amp; ROT CIPHER DECODER
+                    </h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                      Reverses Caesar Cipher (Shift = 3) or ROT13 substitution locally in your browser.
+                    </p>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" for="ghost-rot13-input" style="color: var(--cyan);">CIPHERTEXT INPUT (e.g. PHHW DW PLGQLJKW):</label>
+                    <textarea id="ghost-rot13-input" class="form-control" rows="3" placeholder="Enter Caesar or ROT13 ciphertext..." style="font-family: var(--font-code); font-size: 0.92rem;"></textarea>
+                  </div>
+
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    <button type="button" id="btn-ghost-caesar-decode" class="btn-cyber btn-cyber-primary btn-cyber-sm" onclick="window.runGhostCaesarDecode(3)">
+                      [ 🔓 DECODE CAESAR (SHIFT = 3) ]
+                    </button>
+                    <button type="button" id="btn-ghost-rot13-decode" class="btn-cyber btn-cyber-sm" onclick="window.runGhostCaesarDecode(13)">
+                      [ 🔓 DECODE ROT13 (SHIFT = 13) ]
+                    </button>
+                    <button type="button" id="btn-ghost-rot13-clear" class="btn-cyber btn-cyber-sm" onclick="window.clearGhostRot13()">
+                      [ ✕ CLEAR ]
+                    </button>
+                  </div>
+
+                  <label class="form-label" style="color: var(--cyan);">DECODED TEXT OUTPUT:</label>
+                  <div class="ghost-output-terminal">
+                    <span id="ghost-rot13-output" style="color: var(--green); font-weight: 600;">(Awaiting input)</span>
+                    <div id="ghost-rot13-actions" style="display: none; gap: 0.35rem; flex-direction: column;">
+                      <div>
+                        <button type="button" id="btn-copy-ghost-rot13" class="btn-cyber btn-cyber-xs" onclick="window.copyGhostText(document.getElementById('ghost-rot13-output').textContent.trim(), this)">
+                          📋 COPY DECODED TEXT
+                        </button>
+                      </div>
+                      <small style="color: var(--text-muted); font-size: 0.72rem; margin-top: 0.25rem;">
+                        Note: Copy or transcribe this decoded text and submit it manually into the Flag Submission terminal below.
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- =================================================================== -->
+              <!-- PROGRESSIVE HINT SYSTEM (3 LEVELS)                                  -->
+              <!-- =================================================================== -->
+              <div class="ghost-hints-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 187, 0, 0.2); padding-bottom: 0.65rem; margin-bottom: 1rem;">
+                  <span style="font-family: var(--font-cyber); font-size: 0.95rem; color: #ffbb00; letter-spacing: 1.5px; font-weight: 700;">
+                    💡 PROGRESSIVE TACTICAL HINTS
+                  </span>
+                  <span class="cyber-badge" style="background: rgba(255, 187, 0, 0.15); color: #ffbb00; border: 1px solid rgba(255, 187, 0, 0.4); font-size: 0.65rem;">
+                    3 TIERS AVAILABLE
+                  </span>
+                </div>
+
+                <!-- Hint 1: Free -->
+                <div class="ghost-hint-item">
+                  <div class="ghost-hint-header">
+                    <div>
+                      <span class="cyber-badge badge-green" style="font-size: 0.65rem; margin-right: 0.4rem;">HINT 1 // FREE</span>
+                      <strong style="color: #ffffff; font-family: var(--font-tech); font-size: 0.88rem;">SURFACE OBSERVATION</strong>
+                    </div>
+                    <button type="button" id="btn-ghost-hint-1" class="btn-cyber btn-cyber-xs" onclick="window.toggleGhostHint(1)">
+                      [ REVEAL HINT ]
+                    </button>
+                  </div>
+                  <div id="ghost-hint-body-1" class="ghost-hint-body" style="display: none;">
+                    “Look closely at the blueprint on the desk and the handwritten notebook. The blueprint text reads: PHHW DW PLGQLJKW.”
+                  </div>
+                </div>
+
+                <!-- Hint 2: Unlockable -->
+                <div class="ghost-hint-item">
+                  <div class="ghost-hint-header">
+                    <div>
+                      <span class="cyber-badge badge-cyan" style="font-size: 0.65rem; margin-right: 0.4rem;">HINT 2 // UNLOCKABLE</span>
+                      <strong style="color: #ffffff; font-family: var(--font-tech); font-size: 0.88rem;">FILE MEMORY</strong>
+                    </div>
+                    <button type="button" id="btn-ghost-hint-2" class="btn-cyber btn-cyber-xs" onclick="window.toggleGhostHint(2)">
+                      [ 🔓 UNLOCK HINT 2 ]
+                    </button>
+                  </div>
+                  <div id="ghost-hint-body-2" class="ghost-hint-body" style="display: none;">
+                    “The notebook confirms: 1. Caesar Cipher, 2. Shift = 3. The file metadata also preserves the encrypted coordinates.”
+                  </div>
+                </div>
+
+                <!-- Hint 3: Strong -->
+                <div class="ghost-hint-item">
+                  <div class="ghost-hint-header">
+                    <div>
+                      <span class="cyber-badge badge-red" style="font-size: 0.65rem; margin-right: 0.4rem;">HINT 3 // STRONG</span>
+                      <strong style="color: #ffffff; font-family: var(--font-tech); font-size: 0.88rem;">LAYERED CONCEALMENT</strong>
+                    </div>
+                    <button type="button" id="btn-ghost-hint-3" class="btn-cyber btn-cyber-xs" onclick="window.toggleGhostHint(3)">
+                      [ 🔓 UNLOCK HINT 3 ]
+                    </button>
+                  </div>
+                  <div id="ghost-hint-body-3" class="ghost-hint-body" style="display: none;">
+                    “Applying Caesar Cipher (Shift = 3 backwards: P-3=M, H-3=E, W-3=T) to 'PHHW DW PLGQLJKW' reveals 'MEET AT MIDNIGHT'. Format: CYBERTRIX{MEET_AT_MIDNIGHT}.”
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- =================================================================== -->
+          <!-- UNIVERSAL FLAG SUBMISSION ARENA (Requirements 1, 24, 25)            -->
+          <!-- =================================================================== -->
+          <div id="flag-submission-arena" class="flag-submission-arena">
+            <div class="flag-arena-header">
+              <div class="flag-arena-title">
+                <span>⚡</span> FLAG SUBMISSION
+              </div>
+              <div id="flag-target-label" style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--cyan); letter-spacing: 1px;">
+                TARGET: MIRROR KEYBOARD
+              </div>
+            </div>
+
+            <!-- Mirror Keyboard Locked Flag Notice (displayed until sentence decoded) -->
+            <div id="mk-flag-locked-notice" class="event-paused-banner" style="display: none; margin-bottom: 0.75rem;">
+              <span>🔒</span> SOLVE MIRROR SENTENCE FIRST TO UNLOCK FLAG SUBMISSION
+            </div>
+
+            <!-- Active Flag Input Box -->
+            <div id="flag-active-form-wrapper">
+              <form id="global-flag-form" autocomplete="off">
+                <div class="flag-input-group">
+                  <input type="text" id="global-flag-input" class="flag-input-field" placeholder="CYBERTRIX{enter_flag_here}" required autocomplete="off">
+                  <button type="submit" id="global-flag-submit-btn" class="flag-submit-btn">[ SUBMIT FLAG ]</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Dynamic Event State Banners (Only displayed when event is not LIVE) -->
+            <div id="flag-event-ended-banner" class="event-closed-banner" style="display: none;">
+              <span>■</span> EVENT ENDED / FLAG SUBMISSION IS CLOSED
+            </div>
+            <div id="flag-event-paused-banner" class="event-paused-banner" style="display: none;">
+              <span>⏸</span> EVENT PAUSED / FLAG SUBMISSION IS TEMPORARILY SUSPENDED
+            </div>
+            <div id="flag-event-notstarted-banner" class="event-paused-banner" style="display: none;">
+              <span>◈</span> EVENT NOT STARTED / FLAG SUBMISSION IS NOT YET OPEN
+            </div>
+
+            <!-- Live Submission Feedback Banner -->
+            <div id="global-flag-feedback" class="submission-feedback" style="display: none; margin-top: 1rem;"></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Public Footer -->
+  <footer class="cyber-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>© 2026 CYBERTRIX CTF. ALL RIGHTS RESERVED.</div>
+        <div>THINK. EXPLOIT. CAPTURE THE FLAG.</div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/event.js"></script>
+  <script src="js/announcements.js"></script>
+  <script src="js/ascii_code_data.js"></script>
+  <script src="js/challenges.js"></script>
+</body>
+</html>

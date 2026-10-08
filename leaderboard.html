@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Live Leaderboard</title>
+  <meta name="description" content="Live real-time standings and player rankings for the CYBERTRIX cybersecurity CTF arena.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- Ambient FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+  <div class="glow-orb glow-orb-cyan"></div>
+  <div class="glow-orb glow-orb-purple"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="cyber-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-logo-icon">◈</div>
+        <span>CYBER<span class="brand-accent">TRIX</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+        <li><a href="leaderboard.html" class="nav-link active">Leaderboard</a></li>
+        <li><a href="rules.html" class="nav-link">Rules</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sound-toggle" aria-label="Toggle Sound">🔊 SOUND: ON</button>
+        <div id="nav-auth-slot"></div>
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Leaderboard Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <!-- Header -->
+    <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+          <span class="cyber-badge badge-green badge-pulse">● FIRESTORE LIVE SYNC</span>
+          <span class="cyber-badge badge-cyan">TIE-BREAKER: SOLVES & SPEED</span>
+        </div>
+        <h1 style="font-size: clamp(2rem, 5vw, 3rem); letter-spacing: 2px;">
+          CYBERTRIX <span style="color: var(--cyan);">// LIVE LEADERBOARD</span>
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.3rem;">
+          Real-time competitive standings. Points update instantaneously upon verified flag capture.
+        </p>
+      </div>
+
+      <!-- Quick Stats Strip -->
+      <div style="display: flex; gap: 1rem;">
+        <div class="cyber-card" style="padding: 0.75rem 1.25rem; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-tech);">OPERATIVES</div>
+          <div id="stats-total-players" style="font-family: var(--font-cyber); font-size: 1.4rem; color: var(--cyan); font-weight: 800;">0</div>
+        </div>
+        <div class="cyber-card" style="padding: 0.75rem 1.25rem; text-align: center;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-tech);">TOTAL SOLVES</div>
+          <div id="stats-total-solves" style="font-family: var(--font-cyber); font-size: 1.4rem; color: var(--green); font-weight: 800;">0</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top 3 Podium (Section 5) -->
+    <section id="leaderboard-podium" class="leaderboard-podium">
+      <!-- Injected via leaderboard.js -->
+    </section>
+
+    <!-- Search Bar & Table Controls -->
+    <section style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="font-family: var(--font-tech); font-size: 1.2rem; font-weight: 700; color: #fff; letter-spacing: 1px;">
+        COMPETITOR ROSTER
+      </div>
+      <div style="max-width: 380px; width: 100%;">
+        <input type="text" id="search-leaderboard" class="form-control" placeholder="Search operative codename..." style="padding: 0.55rem 0.9rem; font-size: 0.85rem;" aria-label="Search Leaderboard">
+      </div>
+    </section>
+
+    <!-- Leaderboard Table (Section 5) -->
+    <section class="cyber-table-container">
+      <table class="cyber-table">
+        <thead>
+          <tr>
+            <th style="width: 90px;">RANK</th>
+            <th>USERNAME</th>
+            <th style="width: 120px;">SOLVED</th>
+            <th style="width: 150px;">POINTS</th>
+            <th style="width: 150px;">LAST SOLVE</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-tbody">
+          <!-- Injected via leaderboard.js -->
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              CONNECTING TO FIRESTORE LEADERBOARD ENGINE...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Public Footer -->
+  <footer class="cyber-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>© 2026 CYBERTRIX CTF. ALL RIGHTS RESERVED.</div>
+        <div>FAIR PLAY GUARANTEED // SUBMISSIONS MONITORED</div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/leaderboard.js"></script>
+</body>
+</html>

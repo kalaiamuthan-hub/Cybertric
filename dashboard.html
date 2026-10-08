@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERTRIX // Operative Dashboard</title>
+  <meta name="description" content="Participant cybersecurity dashboard for CYBERTRIX CTF competition.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- Ambient Background FX -->
+  <div class="cyber-grid-overlay"></div>
+  <div class="scanline-effect"></div>
+  <div class="glow-orb glow-orb-cyan"></div>
+  <div class="glow-orb glow-orb-purple"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="cyber-navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="nav-brand">
+        <div class="brand-logo-icon">◈</div>
+        <span>CYBER<span class="brand-accent">TRIX</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="challenges.html" class="nav-link">Challenges</a></li>
+        <li><a href="leaderboard.html" class="nav-link">Leaderboard</a></li>
+        <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li><a href="rules.html" class="nav-link">Rules</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sound-toggle" aria-label="Toggle Sound">🔊 SOUND: ON</button>
+        <div id="nav-auth-slot"></div>
+        <button class="mobile-toggle" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Container -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+
+    <!-- Disabled Account Alert Banner (Requirement 3) -->
+    <div id="account-disabled-banner" class="account-disabled-banner" style="display: none;">
+      <div class="account-disabled-content">
+        <span class="account-disabled-icon">⛔</span>
+        <div>
+          <div class="account-disabled-title">ACCOUNT DISABLED</div>
+          <div class="account-disabled-desc">Your CYBERTRIX account has been disabled by the administrator. Participation in challenges and flag submissions are restricted.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Welcome Header -->
+    <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+          <span class="cyber-badge badge-cyan">SESSION ACTIVE</span>
+          <span id="user-email" style="font-family: var(--font-code); font-size: 0.8rem; color: var(--text-muted);"></span>
+        </div>
+        <h1 style="font-size: clamp(1.8rem, 4vw, 2.5rem); letter-spacing: 2px;">
+          WELCOME, <span id="user-greeting" style="color: var(--cyan); text-shadow: var(--cyan-glow);">OPERATIVE</span>
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.3rem;">
+          UID: <span id="user-uid" style="font-family: var(--font-code); color: var(--purple-neon); font-size: 0.82rem;"></span>
+          <span style="margin: 0 0.5rem; color: var(--border-subtle);">|</span>
+          COLLEGE: <span id="user-college" style="font-family: var(--font-code); color: var(--green); font-size: 0.82rem;"></span>
+        </p>
+      </div>
+
+      <div>
+        <a href="challenges.html" class="btn-cyber btn-cyber-primary">
+          <span>⚡ GO TO CHALLENGES ARENA</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Statistics Cards Grid (Section 7) -->
+    <section class="dashboard-grid">
+      <!-- Total Points -->
+      <div class="cyber-card dash-stat-card cyber-card-corner">
+        <div class="dash-stat-icon">★</div>
+        <div class="dash-stat-info">
+          <span class="stat-label">TOTAL POINTS</span>
+          <span class="dash-stat-number" style="color: var(--cyan);" id="dash-total-points">0</span>
+        </div>
+      </div>
+
+      <!-- Challenges Solved -->
+      <div class="cyber-card dash-stat-card cyber-card-corner">
+        <div class="dash-stat-icon" style="color: var(--green); border-color: rgba(0, 255, 157, 0.3);">✓</div>
+        <div class="dash-stat-info">
+          <span class="stat-label">CHALLENGES SOLVED</span>
+          <span class="dash-stat-number" style="color: var(--green);" id="dash-solved-count">0</span>
+        </div>
+      </div>
+
+      <!-- Current Rank -->
+      <div class="cyber-card dash-stat-card cyber-card-corner">
+        <div class="dash-stat-icon" style="color: var(--yellow); border-color: rgba(255, 183, 3, 0.3);">👑</div>
+        <div class="dash-stat-info">
+          <span class="stat-label">CURRENT RANK</span>
+          <span class="dash-stat-number" style="color: var(--yellow);" id="dash-current-rank">#--</span>
+        </div>
+      </div>
+
+      <!-- Completion % -->
+      <div class="cyber-card dash-stat-card cyber-card-corner">
+        <div class="dash-stat-icon" style="color: var(--purple-neon); border-color: rgba(189, 0, 255, 0.3);">📊</div>
+        <div class="dash-stat-info">
+          <span class="stat-label">COMPLETION %</span>
+          <span class="dash-stat-number" style="color: var(--purple-neon);" id="dash-completion-pct">0%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Bar Section -->
+    <section class="cyber-card" style="margin-bottom: 2.5rem; padding: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-family: var(--font-tech); font-weight: 600; text-transform: uppercase;">
+        <span style="color: var(--text-secondary); letter-spacing: 1px;">ARENA MASTERY PROGRESS</span>
+        <span style="color: var(--cyan);"><span id="dash-solved-count-2">0</span> / <span id="dash-available-count">10</span> CHALLENGES</span>
+      </div>
+      <div class="cyber-progress-container">
+        <div id="dash-progress-bar" class="cyber-progress-bar" style="width: 0%;"></div>
+      </div>
+    </section>
+
+    <!-- Two-column Section: Solved Breakdown & Recent Activity -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 2rem;">
+      <!-- Solved Challenges Card -->
+      <div class="cyber-card cyber-card-corner">
+        <div class="section-header" style="margin-bottom: 1.25rem;">
+          <h2 class="section-title" style="font-size: 1.25rem;">
+            <span style="color: var(--green);">CAPTURED</span> FLAGS
+          </h2>
+          <a href="challenges.html" style="font-size: 0.8rem; font-family: var(--font-code);">VIEW ALL</a>
+        </div>
+        <div id="dash-solved-breakdown" style="display: flex; flex-wrap: wrap; gap: 0.5rem; min-height: 120px;">
+          <!-- Injected via submissions.js -->
+        </div>
+      </div>
+
+      <!-- Recent Submissions History -->
+      <div class="cyber-card cyber-card-corner">
+        <div class="section-header" style="margin-bottom: 1.25rem;">
+          <h2 class="section-title" style="font-size: 1.25rem;">
+            <span style="color: var(--cyan);">SUBMISSION</span> LOGS
+          </h2>
+          <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted);">AUDIT TRAIL</span>
+        </div>
+
+        <div class="cyber-table-container" style="box-shadow: none; border: none;">
+          <table class="cyber-table" style="font-size: 0.85rem;">
+            <thead>
+              <tr>
+                <th>CHALLENGE</th>
+                <th>FLAG SUBMITTED</th>
+                <th>RESULT</th>
+                <th>TIMESTAMP</th>
+              </tr>
+            </thead>
+            <tbody id="user-submissions-tbody">
+              <!-- Injected via submissions.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Public Footer -->
+  <footer class="cyber-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>© 2026 CYBERTRIX CTF. ALL RIGHTS RESERVED.</div>
+        <div>OPERATIVE CLEARANCE LEVEL: ACTIVE</div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/submissions.js"></script>
+</body>
+</html>
